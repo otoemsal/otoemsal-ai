@@ -425,4 +425,330 @@
     const CITIES = [
       { name: "Ankara", score: 94, paintless: "%62", avgKm: "14.200 km/yıl", climate: "Kuru iklim (Pas riski düşük)", priceDiff: "-%2", note: "Memur/aile kullanımı yoğun, bakımlı araç bulma oranı en yüksek il." },
       { name: "Eskişehir", score: 92, paintless: "%64", avgKm: "12.800 km/yıl", climate: "Kuru iklim", priceDiff: "0%", note: "Düşük trafikli şehir yapısı sayesinde lokal boya oranı çok düşük." },
-      { name: "Konya", score: 90, paintless: "%59", avgKm: "15.100 km/yıl", climate: "Kuru iklim", priceDiff: "-%3", note: "Geniş yollar ve düzenli bakım kültürü, özellikle VW/Toyota grubunda güçlü
+      { name: "Konya", score: 90, paintless: "%59", avgKm: "15.100 km/yıl", climate: "Kuru iklim", priceDiff: "-%3", note: "Geniş yollar ve düzenli bakım kültürü, özellikle VW/Toyota grubunda güçlü." },
+      { name: "Kayseri", score: 88, paintless: "%57", avgKm: "14.800 km/yıl", climate: "Kuru iklim", priceDiff: "-%2", note: "Temiz aile araçları bol, fiyatlar piyasaya göre dengeli." },
+      { name: "Bursa", score: 82, paintless: "%48", avgKm: "16.500 km/yıl", climate: "Ilıman", priceDiff: "-%1", note: "İlan çeşitliliği yüksek, sanayi ve al-sat döngüsü hızlı." },
+      { name: "İzmir", score: 80, paintless: "%45", avgKm: "15.900 km/yıl", climate: "Nemli / Güneş yanığı riski", priceDiff: "+%2", note: "Ege araçlarında alt takım nem kontrolü ve vernik/güneş yanığı kontrolü önemli." },
+      { name: "Antalya", score: 79, paintless: "%46", avgKm: "16.200 km/yıl", climate: "Yüksek güneş / Nem", priceDiff: "+%1", note: "Filo/rent-a-car geçmişi mutlaka 5664 ve muayene kayıtlarından teyit edilmeli." },
+      { name: "İstanbul", score: 74, paintless: "%36", avgKm: "18.400 km/yıl", climate: "Nemli / Yoğun trafik", priceDiff: "-%4", note: "En ucuz ve en bol seçenek burada; ancak tampon/çamurluk lokal boya oranı yüksektir." },
+      { name: "Gaziantep", score: 76, paintless: "%42", avgKm: "17.900 km/yıl", climate: "Kuru", priceDiff: "-%4", note: "Agresif fiyatlar bulunur, detaylı şasi/airbag ekspertizi önerilir." }
+    ];
+
+    const CHRONICS = [
+      { title: "VW / Skoda / Seat — 1.5 TSI & 1.6 TDI (DSG)", risk: "Orta-Yüksek", items: ["Yokuş kalkışta 1-2 geçişinde kavrama titremesi kontrol edilmeli.", "Mekatronik basınç tüpü ve yazılım geçmişi sorulmalı.", "1.6 TDI modellerde EGR ve DPF tıkanıklığı kontrol edilmeli."] },
+      { title: "Peugeot / Opel / Citroen — 1.2 PureTech", risk: "Yüksek", items: ["Yağ içinde çalışan triger kayışının 60.000 km civarında değişip değişmediği faturalı teyit edilmeli.", "Yağ süzgeci temizliği ve yağ eksiltme geçmişi sorulmalı."] },
+      { title: "Fiat Egea — 1.4 Fire & 1.3 / 1.6 Multijet", risk: "Düşük", items: ["1.4 Fire motorlarda yüksek devirde yağ eksiltme normal sınırlarda mı kontrol edilmeli.", "Multijet dizellerde enjektör ve turbo ıslık sesi dinlenmeli."] },
+      { title: "Renault — 1.5 dCi & EDC Şanzıman", risk: "Düşük-Orta", items: ["1.5 dCi motor çok dayanıklıdır; 120 bin km üzeri enjektör bakımı sorulmalı.", "EDC şanzımanda vites geçiş gecikmesi ve kavrama testi yapılmalı."] },
+      { title: "Toyota Corolla Hybrid & Honda Civic CVT", risk: "Çok Düşük", items: ["Toyota hibritte yetkili servis hibrit pil sağlık testi (Hybrid Health Check) belgesi istenmeli.", "Honda Civic FC5 kasalarda C sütunu göçük kontrolü ve CVT şanzıman yağı değişimi sorulmalı."] },
+      { title: "Chery (Omoda 5 / Tiggo) & Togg T10X", risk: "Düşük", items: ["Multimedya ve sürüş destek yazılımlarının son sürüme güncellendiği teyit edilmeli.", "Togg T10X'te batarya sağlık yüzdesi (SoH) ve hızlı şarj (DC) geçmişi kontrol edilmeli."] }
+    ];
+
+    const EKSPERTIZ = [
+      { name: "Otorapor Oto Ekspertiz — Maslak", city: "İstanbul", district: "Sarıyer", rating: "4.8", tse: "TSE-HYB Belgeli", phone: "0850 255 00 00" },
+      { name: "Tarcanlar Oto Ekspertiz — Ümraniye", city: "İstanbul", district: "Ümraniye", rating: "4.9", tse: "TSE-HYB Belgeli", phone: "0216 555 00 00" },
+      { name: "Pilot Garage — Çankaya / Şaşmaz", city: "Ankara", district: "Etimesgut", rating: "4.8", tse: "TSE-HYB Belgeli", phone: "0312 555 00 00" },
+      { name: "Dynobil Oto Ekspertiz — Bornova", city: "İzmir", district: "Bornova", rating: "4.7", tse: "TSE-HYB Belgeli", phone: "0232 555 00 00" },
+      { name: "Otorapor — Nilüfer", city: "Bursa", district: "Nilüfer", rating: "4.8", tse: "TSE-HYB Belgeli", phone: "0224 555 00 00" },
+      { name: "Pilot Garage — Muratpaşa", city: "Antalya", district: "Muratpaşa", rating: "4.7", tse: "TSE-HYB Belgeli", phone: "0242 555 00 00" }
+    ];
+
+    // --- YARDIMCI FONKSİYONLAR ---
+    const fmt = (n) => new Intl.NumberFormat('tr-TR').format(Math.round(n)) + ' TL';
+
+    function switchTab(id) {
+      document.querySelectorAll('.tab-section').forEach(s => s.classList.add('hidden'));
+      document.getElementById('tab-' + id).classList.remove('hidden');
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        if (b.dataset.tab === id) {
+          b.classList.remove('bg-slate-800', 'text-slate-300');
+          b.classList.add('bg-blue-600', 'text-white');
+        } else {
+          b.classList.remove('bg-blue-600', 'text-white');
+          b.classList.add('bg-slate-800', 'text-slate-300');
+        }
+      });
+    }
+
+    function setViewMode(mode) {
+      const wrapper = document.getElementById('appWrapper');
+      const island = document.getElementById('iosIsland');
+      if (mode === 'ios') {
+        wrapper.className = 'iphone-frame bg-slate-950 p-3 pt-12 overflow-y-auto no-scrollbar';
+        island.classList.remove('hidden');
+        document.getElementById('btnIos').className = 'px-3 py-1.5 rounded-lg bg-blue-600 text-white transition';
+        document.getElementById('btnWeb').className = 'px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition';
+      } else {
+        wrapper.className = 'max-w-6xl mx-auto transition-all duration-300';
+        island.classList.add('hidden');
+        document.getElementById('btnWeb').className = 'px-3 py-1.5 rounded-lg bg-blue-600 text-white transition';
+        document.getElementById('btnIos').className = 'px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition';
+      }
+    }
+
+    let isDark = true;
+    function toggleTheme() {
+      isDark = !isDark;
+      const body = document.getElementById('mainBody');
+      if (!isDark) {
+        body.classList.remove('bg-slate-950', 'text-slate-100');
+        body.classList.add('bg-slate-100', 'text-slate-900');
+        document.getElementById('btnTheme').innerHTML = '<i class="fa-solid fa-moon"></i>';
+      } else {
+        body.classList.add('bg-slate-950', 'text-slate-100');
+        body.classList.remove('bg-slate-100', 'text-slate-900');
+        document.getElementById('btnTheme').innerHTML = '<i class="fa-solid fa-sun"></i>';
+      }
+    }
+
+    function loadSample(idx) {
+      document.getElementById('adInput').value = SAMPLES[idx];
+      analyzeAdText();
+    }
+
+    function calculatePrice(brand, year, km, paint, changed, tramer) {
+      const base = (CAR_DB[brand] ? CAR_DB[brand].base : 1100000);
+      const yearFactor = 1 + (year - 2021) * 0.065;
+      const kmPenalty = Math.max(0, (km - 60000) / 10000) * 14000;
+      const damagePenalty = (paint * 18000) + (changed * 38000) + (tramer * 0.45);
+      const marketAvg = Math.max(350000, (base * yearFactor) - kmPenalty - damagePenalty);
+      const fastSale = marketAvg * 0.94;
+      const highBand = marketAvg * 1.06;
+      return { fastSale, marketAvg, highBand };
+    }
+
+    function renderValuationHTML(data) {
+      const { brand, model, year, km, paint, changed, tramer, asking, flags } = data;
+      const { fastSale, marketAvg, highBand } = calculatePrice(brand, year, km, paint, changed, tramer);
+      const noter = 2250, sigorta = 14500, ekspertiz = 6500;
+      const netCost = (asking || marketAvg) + noter + sigorta + ekspertiz;
+
+      let badge = '';
+      if (asking) {
+        if (asking <= fastSale * 1.01) badge = '<span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 text-xs font-bold">🔥 FIRSAT FİYAT</span>';
+        else if (asking <= marketAvg * 1.03) badge = '<span class="px-2.5 py-1 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-bold">✅ PİYASA DEĞERİNDE</span>';
+        else badge = '<span class="px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-300 text-xs font-bold">⚠️ PİYASADAN PAHALI</span>';
+      }
+
+      const flagsHTML = flags && flags.length ? `
+        <div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-200 space-y-1">
+          <div class="font-bold text-rose-400"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Tespit Edilen Kırmızı Bayraklar</div>
+          ${flags.map(f => `<div>• ${f}</div>`).join('')}
+        </div>` : '';
+
+      // Canlı veritabanından eşleşen emsalleri bul
+      const matchingLive = LIVE_LISTINGS.filter(c => (c.marka || '').toLowerCase() === brand.toLowerCase());
+      const liveCompsHTML = matchingLive.length ? `
+        <div class="p-3.5 rounded-xl bg-emerald-500/5 border border-emerald-500/25 space-y-2">
+          <div class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+            <i class="fa-solid fa-database"></i> Canlı Veritabanından Eşleşen Emsaller (${matchingLive.length})
+          </div>
+          <div class="space-y-1.5">
+            ${matchingLive.slice(0, 3).map(c => `
+              <div class="flex flex-wrap items-center justify-between text-xs bg-slate-950/80 px-3 py-2 rounded-lg border border-slate-800">
+                <span class="text-slate-200 font-medium">${c.yil} ${c.marka} ${c.model} (${new Intl.NumberFormat('tr-TR').format(c.km)} km, ${c.il})</span>
+                <span class="font-extrabold text-emerald-300">${fmt(c.fiyat)}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>` : '';
+
+      const shareText = encodeURIComponent(`OtoEmsal AI Raporu: ${year} ${brand} ${model} (${km} km) | Hızlı Satış: ${fmt(fastSale)} | Piyasa Ort: ${fmt(marketAvg)}`);
+
+      return `
+        <div class="space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <h3 class="text-base font-extrabold text-white">${year} ${brand} ${model}</h3>
+              <p class="text-xs text-slate-400">${new Intl.NumberFormat('tr-TR').format(km)} km • ${paint} Boya • ${changed} Değişen • ${fmt(tramer)} Tramer</p>
+            </div>
+            ${badge}
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
+              <div class="text-[11px] text-emerald-300 font-semibold">Hızlı Satış (-%6 Pazarlık)</div>
+              <div class="text-lg font-extrabold text-white mt-0.5">${fmt(fastSale)}</div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-blue-500/15 border border-blue-500/40">
+              <div class="text-[11px] text-blue-300 font-semibold">Piyasa Ortalaması</div>
+              <div class="text-lg font-extrabold text-white mt-0.5">${fmt(marketAvg)}</div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-800/80 border border-slate-700">
+              <div class="text-[11px] text-slate-300 font-semibold">Üst Bant (Tok Satıcı)</div>
+              <div class="text-lg font-extrabold text-white mt-0.5">${fmt(highBand)}</div>
+            </div>
+          </div>
+
+          ${liveCompsHTML}
+          ${flagsHTML}
+
+          <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span class="text-slate-400">Cebinden Çıkacak Net Maliyet (Noter + Sigorta + Ekspertiz dahil):</span>
+              <strong class="text-white ml-1">${fmt(netCost)}</strong>
+            </div>
+            <a href="https://wa.me/?text=${shareText}" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold">
+              <i class="fa-brands fa-whatsapp mr-1"></i>Paylaş
+            </a>
+          </div>
+        </div>
+      `;
+    }
+
+    function analyzeAdText() {
+      const txt = document.getElementById('adInput').value.trim();
+      if (!txt) return alert('Lütfen bir ilan metni yapıştırın.');
+      const lower = txt.toLowerCase();
+
+      let brand = "Volkswagen", model = "Passat";
+      for (const b of Object.keys(CAR_DB)) {
+        if (lower.includes(b.toLowerCase())) {
+          brand = b;
+          model = CAR_DB[b].models.find(m => lower.includes(m.toLowerCase().split(' ')[0])) || CAR_DB[b].models[0];
+          break;
+        }
+      }
+      const yearMatch = txt.match(/20(0\d|1\d|2[0-6])/);
+      const year = yearMatch ? parseInt(yearMatch[0]) : 2020;
+
+      const kmMatch = txt.match(/(\d{2,3})[.,]?(\d{3})\s*km/i);
+      const km = kmMatch ? parseInt(kmMatch[1] + kmMatch[2]) : 85000;
+
+      const paintMatch = txt.match(/(\d+)\s*(parça\s*)?(lokal\s*)?boya/i);
+      const paint = paintMatch ? parseInt(paintMatch[1]) : (lower.includes('lokal') ? 1 : 0);
+
+      const chgMatch = txt.match(/(\d+)\s*(parça\s*)?değişen/i);
+      const changed = chgMatch ? parseInt(chgMatch[1]) : 0;
+
+      const tramerMatch = txt.match(/(\d{1,3})[.,](\d{3})\s*tl\s*(yeni\s*tarihli\s*)?tramer/i);
+      const tramer = tramerMatch ? parseInt(tramerMatch[1] + tramerMatch[2]) : 0;
+
+      const priceMatch = txt.match(/(\d)[.,](\d{3})[.,](\d{3})\s*tl/i) || txt.match(/(\d{3})[.,](\d{3})\s*tl/i);
+      let asking = 0;
+      if (priceMatch) {
+        asking = parseInt(priceMatch[0].replace(/[^\d]/g, ''));
+      }
+
+      const flags = [];
+      if (lower.includes('vaktim yok')) flags.push('"Vaktim yok" ifadesi: Satıcı detaylı ekspertizden kaçınıyor olabilir.');
+      if (lower.includes('acil nakit')) flags.push('"Acil nakit" vurgusu: Fiyat avantajı olabilir ancak şasi/tramer teyidi şart.');
+      if (tramer >= 50000) flags.push('Yüksek tramer tutarı tespit edildi. 5664 detaylı hasar kalemlerini isteyin.');
+      if (lower.includes('puretech') && km > 60000) flags.push('1.2 PureTech motor: Triger kayışı değişim faturasını mutlaka sorun.');
+
+      document.getElementById('aiResultPanel').innerHTML = renderValuationHTML({ brand, model, year, km, paint, changed, tramer, asking, flags });
+    }
+
+    function populateBrands() {
+      const bSel = document.getElementById('mBrand');
+      bSel.innerHTML = Object.keys(CAR_DB).map(b => `<option value="${b}">${b}</option>`).join('');
+      populateModels();
+    }
+
+    function populateModels() {
+      const brand = document.getElementById('mBrand').value;
+      const mSel = document.getElementById('mModel');
+      mSel.innerHTML = CAR_DB[brand].models.map(m => `<option value="${m}">${m}</option>`).join('');
+    }
+
+    function runManualValuation() {
+      const data = {
+        brand: document.getElementById('mBrand').value,
+        model: document.getElementById('mModel').value,
+        year: parseInt(document.getElementById('mYear').value) || 2021,
+        km: parseInt(document.getElementById('mKm').value) || 75000,
+        paint: parseInt(document.getElementById('mPaint').value) || 0,
+        changed: parseInt(document.getElementById('mChanged').value) || 0,
+        tramer: parseInt(document.getElementById('mTramer').value) || 0,
+        asking: parseInt(document.getElementById('mAsking').value) || 0,
+        flags: []
+      };
+      document.getElementById('manualResultPanel').innerHTML = renderValuationHTML(data);
+    }
+
+    function renderCities() {
+      const sort = document.getElementById('citySort').value;
+      const list = [...CITIES].sort((a, b) => {
+        if (sort === 'paintless') return parseInt(b.paintless.replace(/\D/g,'')) - parseInt(a.paintless.replace(/\D/g,''));
+        if (sort === 'price') return parseInt(a.priceDiff) - parseInt(b.priceDiff);
+        return b.score - a.score;
+      });
+      document.getElementById('cityGrid').innerHTML = list.map(c => `
+        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-white text-sm">${c.name}</h3>
+            <span class="px-2 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 text-xs font-extrabold">${c.score}/100</span>
+          </div>
+          <div class="flex gap-2 text-[11px] text-slate-400">
+            <span>Boyasız: <b class="text-slate-200">${c.paintless}</b></span>
+            <span>•</span>
+            <span>Fiyat: <b class="text-blue-300">${c.priceDiff}</b></span>
+          </div>
+          <p class="text-[11px] text-slate-400">${c.note}</p>
+        </div>
+      `).join('');
+    }
+
+    function calcIntercity() {
+      const local = parseInt(document.getElementById('cLocal').value) || 0;
+      const remote = parseInt(document.getElementById('cRemote').value) || 0;
+      const travel = parseInt(document.getElementById('cTravel').value) || 0;
+      const profit = local - (remote + travel);
+      const el = document.getElementById('intercityResult');
+      if (profit > 0) {
+        el.innerHTML = `<div class="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold">✅ Başka ilden almak yol masrafı dahil ${fmt(profit)} net avantaj sağlıyor.</div>`;
+      } else {
+        el.innerHTML = `<div class="p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 font-bold">⚠️ Yol masrafıyla birlikte ${fmt(Math.abs(profit))} daha pahalıya geliyor; kendi ilinizden bakmak daha mantıklı.</div>`;
+      }
+    }
+
+    function renderChronic() {
+      const q = document.getElementById('chronicSearch').value.toLowerCase();
+      const filtered = CHRONICS.filter(c => c.title.toLowerCase().includes(q) || c.items.some(i => i.toLowerCase().includes(q)));
+      document.getElementById('chronicGrid').innerHTML = filtered.map(c => `
+        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="font-bold text-white text-sm">${c.title}</h3>
+            <span class="text-[10px] px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 font-bold">Risk: ${c.risk}</span>
+          </div>
+          <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+            ${c.items.map(i => `<li>${i}</li>`).join('')}
+          </ul>
+        </div>
+      `).join('');
+    }
+
+    function copyQuestions() {
+      const text = Array.from(document.querySelectorAll('#sellerQuestions li')).map((li, i) => `${i+1}. ${li.innerText}`).join('\n');
+      navigator.clipboard.writeText(text);
+      alert('Satıcıya sorulacak 5 kritik soru kopyalandı! WhatsApp\'a yapıştırabilirsiniz.');
+    }
+
+    function renderEkspertiz() {
+      const city = document.getElementById('eksCity').value;
+      const list = city === 'Tümü' ? EKSPERTIZ : EKSPERTIZ.filter(e => e.city === city);
+      document.getElementById('eksGrid').innerHTML = list.map(e => `
+        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2.5">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <h3 class="font-bold text-white text-sm">${e.name}</h3>
+              <p class="text-[11px] text-slate-400">${e.district}, ${e.city} • ${e.tse}</p>
+            </div>
+            <span class="px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 text-xs font-bold">★ ${e.rating}</span>
+          </div>
+          <div class="flex gap-2">
+            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.name + ' ' + e.city)}" target="_blank" class="flex-1 text-center py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white">Yol Tarifi</a>
+            <button onclick="alert('OtoEmsal %10 İndirim Kodunuz: OTOEMSAL10')" class="flex-1 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-emerald-300">%10 İndirim</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Başlatma
+    populateBrands();
+    renderCities();
+    renderChronic();
+    renderEkspertiz();
+    loadLiveListings();
+  </script>
+</body>
+</html>
