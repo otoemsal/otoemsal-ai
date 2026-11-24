@@ -312,7 +312,7 @@
   <script>
     // --- SUPABASE CANLI BAĞLANTI ---
     const SUPABASE_URL = "https://esdyiobtstawmgtybpdd.supabase.co";
-    const SUPABASE_KEY = "sb_secret_68InIAbdxeMbKva_IyBTXg_bFu24Gwq";
+    const SUPABASE_KEY = "sb_publishable_NLItWoqm9gxD-zYDMtYOww_oD7ryjTd";
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let LIVE_LISTINGS = [];
 
@@ -323,14 +323,18 @@
       const badge = document.getElementById('liveCountBadge');
 
       try {
-        const { data, error } = await db
+        let res = await db
           .from('arac_ilanlari')
           .select('*')
           .order('son_gorulme', { ascending: false });
 
-        if (error) throw error;
+        if (res.error && res.error.message && res.error.message.includes('son_gorulme')) {
+          res = await db.from('arac_ilanlari').select('*');
+        }
 
-        LIVE_LISTINGS = data || [];
+        if (res.error) throw res.error;
+
+        LIVE_LISTINGS = res.data || [];
         badge.innerText = LIVE_LISTINGS.length;
         dot.className = 'w-2 h-2 rounded-full bg-emerald-400 inline-block';
         statusTxt.innerText = `Canlı Veritabanı Aktif (${LIVE_LISTINGS.length} İlan)`;
@@ -377,7 +381,7 @@
         console.error('Supabase hatası:', err);
         dot.className = 'w-2 h-2 rounded-full bg-rose-500 inline-block';
         statusTxt.innerText = 'Veritabanı bağlantısı bekleniyor (API Key kontrol edin)';
-        grid.innerHTML = '<div class="col-span-full text-center py-8 text-rose-400 text-xs">Veritabanına bağlanılamadı. Publishable key değerini kontrol edin.</div>';
+        grid.innerHTML = `<div class="col-span-full text-center py-8 text-rose-400 text-xs">Veritabanına bağlanılamadı: ${err.message || 'Publishable key değerini kontrol edin.'}</div>`;
       }
     }
 
@@ -535,7 +539,6 @@
           ${flags.map(f => `<div>• ${f}</div>`).join('')}
         </div>` : '';
 
-      // Canlı veritabanından eşleşen emsalleri bul
       const matchingLive = LIVE_LISTINGS.filter(c => (c.marka || '').toLowerCase() === brand.toLowerCase());
       const liveCompsHTML = matchingLive.length ? `
         <div class="p-3.5 rounded-xl bg-emerald-500/5 border border-emerald-500/25 space-y-2">
