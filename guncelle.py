@@ -12,7 +12,6 @@ def aktif_modelleri_bul():
     for m in r.json().get("models", []):
         ad = m["name"].replace("models/", "")
         destek = m.get("supportedGenerationMethods", [])
-        # Preview ve medya modellerini ele, sadece kararlı Flash modellerini al
         if "generateContent" in destek and "gemini" in ad and "flash" in ad:
             if not any(x in ad for x in ["preview", "tts", "image", "audio", "live", "embedding"]):
                 modeller.append(ad)
@@ -51,18 +50,18 @@ def main():
 
     ham_ilanlar = [
         {
-            "ilan_id": "test-passat-001",
-            "marka": "Volkswagen",
-            "model": "Passat",
-            "paket": "1.5 TSI Impression",
-            "yil": 2020,
-            "km": 85000,
-            "fiyat": 1360000,
+            "ilan_id": "emsal-egea-001",
+            "marka": "Fiat",
+            "model": "Egea Sedan",
+            "paket": "1.3 Multijet Urban",
+            "yil": 2021,
+            "km": 78000,
+            "fiyat": 945000,
             "il": "Ankara",
-            "aciklama": "Sadece sağ ön çamurluk lokal boyalı, değişen yok. 14.500 TL yeni tarihli tramer var. Cam tavan ve hayalet ekran mevcut."
+            "aciklama": "Sadece sağ arka kapı lokal boyalı, değişen yok. 9.000 TL tramer var. Geri görüş kamerası ve hız sabitleyici mevcut."
         },
         {
-            "ilan_id": "test-egea-002",
+            "ilan_id": "emsal-egea-002",
             "marka": "Fiat",
             "model": "Egea Sedan",
             "paket": "1.4 Fire Urban",
@@ -71,6 +70,116 @@ def main():
             "fiyat": 885000,
             "il": "Eskişehir",
             "aciklama": "Hatasız boyasız değişensiz, tramer 0 TL. İlk sahibinden servis bakımlı."
+        },
+        {
+            "ilan_id": "emsal-clio-001",
+            "marka": "Renault",
+            "model": "Clio",
+            "paket": "1.0 TCe Touch X-Tronic",
+            "yil": 2022,
+            "km": 54000,
+            "fiyat": 1065000,
+            "il": "Bursa",
+            "aciklama": "Boyasız değişensiz, tramer 0 TL. CarPlay ekran ve park sensörü var."
+        },
+        {
+            "ilan_id": "emsal-megane-001",
+            "marka": "Renault",
+            "model": "Megane",
+            "paket": "1.3 TCe Joy EDC",
+            "yil": 2021,
+            "km": 69000,
+            "fiyat": 1240000,
+            "il": "İzmir",
+            "aciklama": "Sol ön çamurluk boyalı, değişen yok. 16.000 TL tramer var. Otomatik vites, bakımlı."
+        },
+        {
+            "ilan_id": "emsal-passat-001",
+            "marka": "Volkswagen",
+            "model": "Passat",
+            "paket": "1.5 TSI Impression",
+            "yil": 2020,
+            "km": 85000,
+            "fiyat": 1580000,
+            "il": "Ankara",
+            "aciklama": "Sadece sağ ön çamurluk lokal boyalı, değişen yok. 14.500 TL yeni tarihli tramer var. Cam tavan ve hayalet ekran mevcut."
+        },
+        {
+            "ilan_id": "emsal-passat-002",
+            "marka": "Volkswagen",
+            "model": "Passat",
+            "paket": "1.6 TDI Business DSG",
+            "yil": 2019,
+            "km": 112000,
+            "fiyat": 1460000,
+            "il": "İstanbul",
+            "aciklama": "1 parça boya, 1 değişen, 22.000 TL tramer var. DSG bakımları yeni yapıldı."
+        },
+        {
+            "ilan_id": "emsal-corolla-001",
+            "marka": "Toyota",
+            "model": "Corolla",
+            "paket": "1.6 Vision Multidrive S",
+            "yil": 2021,
+            "km": 63000,
+            "fiyat": 1340000,
+            "il": "Konya",
+            "aciklama": "Hatasız boyasız değişensiz, tramer 0 TL. Şerit takip ve adaptif hız sabitleyici mevcut."
+        },
+        {
+            "ilan_id": "emsal-corolla-002",
+            "marka": "Toyota",
+            "model": "Corolla Hybrid",
+            "paket": "1.8 Hybrid Dream e-CVT",
+            "yil": 2022,
+            "km": 48000,
+            "fiyat": 1560000,
+            "il": "Antalya",
+            "aciklama": "Boyasız değişensiz, tramer 0 TL. Yetkili servis hibrit sağlık raporu mevcut."
+        },
+        {
+            "ilan_id": "emsal-civic-001",
+            "marka": "Honda",
+            "model": "Civic",
+            "paket": "1.6 i-VTEC Eco Elegance LPG",
+            "yil": 2020,
+            "km": 74000,
+            "fiyat": 1420000,
+            "il": "Ankara",
+            "aciklama": "Boyasız değişensiz, tramer 0 TL. Fabrika çıkış LPG, sunroof ve koltuk ısıtma var."
+        },
+        {
+            "ilan_id": "emsal-duster-001",
+            "marka": "Dacia",
+            "model": "Duster",
+            "paket": "1.0 TCe Eco-G Journey",
+            "yil": 2022,
+            "km": 46000,
+            "fiyat": 1220000,
+            "il": "Kayseri",
+            "aciklama": "Boyasız değişensiz, tramer 0 TL. LPG'li, 360 kamera ve çelik jant mevcut."
+        },
+        {
+            "ilan_id": "emsal-tiggo7-001",
+            "marka": "Chery",
+            "model": "Tiggo 7 Pro",
+            "paket": "1.6 TGDI Excellent DCT",
+            "yil": 2023,
+            "km": 31000,
+            "fiyat": 1740000,
+            "il": "İstanbul",
+            "aciklama": "Boyasız değişensiz, tramer 0 TL. Panoramik cam tavan ve 360 kamera mevcut."
+        },
+        {
+            "ilan_id": "emsal-togg-001",
+            "marka": "Togg",
+            "model": "T10X V2 Uzun Menzil",
+            "paket": "V2 Uzun Menzil",
+            "yil": 2024,
+            "km": 22000,
+            "fiyat": 2080000,
+            "il": "İstanbul",
+            "aciklama": "Boyasız değişensiz, tramer 0 TL. Cam tavan ve Meridian ses sistemi mevcut."
         }
     ]
 
