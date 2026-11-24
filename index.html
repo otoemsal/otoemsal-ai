@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>OtoEmsal AI Pro — İkinci El Araç Emsal & Fiyat Analiz Sistemi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+    .iphone-frame {
+      width: 393px;
+      height: 820px;
+      border: 12px solid #1c1c1e;
+      border-radius: 52px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35), inset 0 0 0 2px #3a3a3c;
+      overflow: hidden;
+      position: relative;
+      margin: 0 auto;
+    }
+    .dynamic-island {
+      width: 118px;
+      height: 32px;
+      background: #000;
+      border-radius: 20px;
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen transition-colors duration-300" id="mainBody">
+
+  <!-- Üst Kontrol Çubuğu -->
+  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+          <i class="fa-solid fa-car-side text-white text-base"></i>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-base tracking-tight leading-none text-white">OtoEmsal <span class="text-blue-400">AI Pro</span></h1>
+          <p class="text-[11px] text-slate-400">Türkiye 2. El Araç Emsal & Fiyat İstihbaratı</p>
+        </div>
+      </div>
+
+      <!-- Görünüm & Tema Kontrolleri -->
+      <div class="flex items-center gap-2">
+        <div class="bg-slate-800 p-1 rounded-xl flex items-center text-xs font-semibold">
+          <button onclick="setViewMode('web')" id="btnWeb" class="px-3 py-1.5 rounded-lg bg-blue-600 text-white transition">
+            <i class="fa-solid fa-desktop mr-1"></i>Web Sitesi
+          </button>
+          <button onclick="setViewMode('ios')" id="btnIos" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition">
+            <i class="fa-brands fa-apple mr-1"></i>iOS Önizleme
+          </button>
+        </div>
+        <button onclick="toggleTheme()" id="btnTheme" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition" title="Açık / Koyu Mod">
+          <i class="fa-solid fa-sun"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Ana Uygulama Konteyneri -->
+  <main class="py-5 px-3" id="outerContainer">
+    <div id="appWrapper" class="max-w-6xl mx-auto transition-all duration-300">
+      <!-- iOS Dynamic Island (Sadece iOS modunda görünür) -->
+      <div id="iosIsland" class="hidden dynamic-island"></div>
+
+      <div id="appInner" class="w-full h-full flex flex-col">
+        <!-- Sekme Menüsü -->
+        <nav id="topNav" class="flex gap-1.5 overflow-x-auto no-scrollbar pb-3 mb-4 border-b border-slate-800">
+          <button onclick="switchTab('ai')" data-tab="ai" class="tab-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>AI İlan Analiz
+          </button>
+          <button onclick="switchTab('manual')" data-tab="manual" class="tab-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">
+            <i class="fa-solid fa-sliders mr-1.5"></i>Manuel Sorgu
+          </button>
+          <button onclick="switchTab('cities')" data-tab="cities" class="tab-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">
+            <i class="fa-solid fa-map-location-dot mr-1.5"></i>İl Temizlik Endeksi
+          </button>
+          <button onclick="switchTab('chronic')" data-tab="chronic" class="tab-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">
+            <i class="fa-solid fa-wrench mr-1.5"></i>Kronik & Püf Noktaları
+          </button>
+          <button onclick="switchTab('ekspertiz')" data-tab="ekspertiz" class="tab-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">
+            <i class="fa-solid fa-shield-halved mr-1.5"></i>En Yakın Ekspertiz
+          </button>
+        </nav>
+
+        <!-- SEKME 1: AI İLAN ANALİZ -->
+        <section id="tab-ai" class="tab-section space-y-5">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <!-- Sol: İlan Girişi -->
+            <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+              <div>
+                <h2 class="text-base font-bold text-white flex items-center gap-2">
+                  <i class="fa-solid fa-robot text-blue-400"></i> Ham İlan & 5664 Çözümleyici
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">İlan açıklamasını yapıştırın; boya, değişen, tramer ve gizli kırmızı bayrakları saniyeler içinde çıkaralım.</p>
+              </div>
+
+              <!-- Hazır Örnekler -->
+              <div class="flex flex-wrap gap-1.5">
+                <button onclick="loadSample(0)" class="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-blue-300 font-medium">Örnek 1: Passat</button>
+                <button onclick="loadSample(1)" class="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-medium">Örnek 2: Egea</button>
+                <button onclick="loadSample(2)" class="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 font-medium">Örnek 3: Riskli İlan</button>
+              </div>
+
+              <textarea id="adInput" rows="6" placeholder="Örn: 2020 Volkswagen Passat 1.5 TSI Impression, 85.000 km, Ankara. Sağ ön çamurluk lokal boyalı, 18.000 TL yeni tarihli tramer var. Fiyat 1.380.000 TL..." class="w-full rounded-xl bg-slate-950 border border-slate-700 focus:border-blue-500 focus:outline-none p-3.5 text-sm text-slate-100 placeholder-slate-500"></textarea>
+
+              <button onclick="analyzeAdText()" class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-blue-600/20 transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-magnifying-glass-chart"></i> Yapay Zeka ile Analiz Et
+              </button>
+            </div>
+
+            <!-- Sağ: Sonuç Paneli -->
+            <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-5" id="aiResultPanel">
+              <div class="h-full flex flex-col items-center justify-center text-center py-10 text-slate-400">
+                <div class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center mb-3 text-blue-400 text-2xl">
+                  <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <p class="font-semibold text-slate-200">Analiz Sonucu Burada Görünecek</p>
+                <p class="text-xs max-w-sm mt-1">Yukarıdaki örnek ilanlardan birine tıklayın veya kendi baktığınız ilanı yapıştırıp analiz edin.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SEKME 2: MANUEL SORGU -->
+        <section id="tab-manual" class="tab-section hidden space-y-5">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3.5">
+              <h2 class="text-base font-bold text-white"><i class="fa-solid fa-car text-blue-400 mr-2"></i>Manuel Araç Değerleme</h2>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-[11px] text-slate-400 font-semibold">Marka (31 Marka)</label>
+                  <select id="mBrand" onchange="populateModels()" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white"></select>
+                </div>
+                <div>
+                  <label class="text-[11px] text-slate-400 font-semibold">Model</label>
+                  <select id="mModel" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white"></select>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-[11px] text-slate-400 font-semibold">Model Yılı</label>
+                  <input id="mYear" type="number" value="2021" min="2000" max="2026" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
+                </div>
+                <div>
+                  <label class="text-[11px] text-slate-400 font-semibold">Kilometre</label>
+                  <input id="mKm" type="number" value="75000" step="5000" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
+                </div>
+              </div>
+              <div class="grid grid-cols-3 gap-2.5">
+                <div>
+                  <label class="text-[11px] text-slate-400 font-semibold">Boya</label>
+                  <input id="mPaint" type="number" value="1" min="0" max="13" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
+                </div>
+                <div>
+                  <label class="text-[11px] text-slate-400 font-semibold">Değişen</label>
+                  <input id="mChanged" type="number" value="0" min="0" max="13" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
+                </div>
+                <div>
+                  <label class="text-[11px] text-slate-400 font-semibold">Tramer (TL)</label>
+                  <input id="mTramer" type="number" value="15000" step="5000" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
+                </div>
+              </div>
+              <div>
+                <label class="text-[11px] text-slate-400 font-semibold">Baktığınız İlan Fiyatı (Opsiyonel - Fırsat Kontrolü)</label>
+                <input id="mAsking" type="number" placeholder="Örn: 1250000" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
+              </div>
+              <button onclick="runManualValuation()" class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm transition">
+                Emsalleri ve Piyasa Değerini Hesapla
+              </button>
+            </div>
+
+            <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-5" id="manualResultPanel">
+              <div class="h-full flex flex-col items-center justify-center text-center py-10 text-slate-400">
+                <i class="fa-solid fa-scale-balanced text-3xl text-blue-400 mb-3"></i>
+                <p class="font-semibold text-slate-200">Emsal & Fiyat Raporu</p>
+                <p class="text-xs mt-1">Soldan araç bilgilerini seçip hesapla butonuna basın.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SEKME 3: İL TEMİZLİK ENDEKSİ -->
+        <section id="tab-cities" class="tab-section hidden space-y-5">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <div>
+                <h2 class="text-base font-bold text-white"><i class="fa-solid fa-award text-emerald-400 mr-2"></i>İllere Göre En Temiz Araç Endeksi</h2>
+                <p class="text-xs text-slate-400">Boyasız/değişensiz oranı, iklim (pas/nem) ve yıllık ortalama km verilerine göre bölgesel piyasa rehberi.</p>
+              </div>
+              <select id="citySort" onchange="renderCities()" class="rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-xs text-white">
+                <option value="score">Temizlik Skoruna Göre (Yüksekten Düşüğe)</option>
+                <option value="paintless">Boyasız Oranına Göre</option>
+                <option value="price">Fiyat Avantajına Göre</option>
+              </select>
+            </div>
+            <div id="cityGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
+          </div>
+
+          <!-- Şehirlerarası Fırsat Hesaplayıcı -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+            <h3 class="text-sm font-bold text-white mb-3"><i class="fa-solid fa-route text-blue-400 mr-2"></i>Başka İlden Araç Alma Fırsat Hesaplayıcı</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+              <div>
+                <label class="text-[11px] text-slate-400">Kendi İlindeki Fiyat (TL)</label>
+                <input id="cLocal" type="number" value="1150000" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
+              </div>
+              <div>
+                <label class="text-[11px] text-slate-400">Diğer İldeki Fiyat (TL)</label>
+                <input id="cRemote" type="number" value="1095000" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
+              </div>
+              <div>
+                <label class="text-[11px] text-slate-400">Yol + Konaklama + Yakıt (TL)</label>
+                <input id="cTravel" type="number" value="9500" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
+              </div>
+              <button onclick="calcIntercity()" class="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm">Net Kârı Hesapla</button>
+            </div>
+            <div id="intercityResult" class="mt-3 text-sm"></div>
+          </div>
+        </section>
+
+        <!-- SEKME 4: KRONİK SORUNLAR & PÜF NOKTALARI -->
+        <section id="tab-chronic" class="tab-section hidden space-y-5">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <div>
+                <h2 class="text-base font-bold text-white"><i class="fa-solid fa-screwdriver-wrench text-amber-400 mr-2"></i>Model Bazlı Kronik Sorunlar & Kontrol Listesi</h2>
+                <p class="text-xs text-slate-400">Almadan önce mutlaka baktırmanız gereken kritik noktalar.</p>
+              </div>
+              <input id="chronicSearch" oninput="renderChronic()" type="text" placeholder="Model veya motor ara (örn: DSG, PureTech, Egea)..." class="rounded-xl bg-slate-950 border border-slate-700 px-3.5 py-2 text-xs text-white w-full sm:w-72" />
+            </div>
+            <div id="chronicGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-white"><i class="fa-brands fa-whatsapp text-emerald-400 mr-2"></i>Satıcıya Sorulacak 5 Kritik Soru</h3>
+              <button onclick="copyQuestions()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white">
+                <i class="fa-regular fa-copy mr-1"></i>Kopyala
+              </button>
+            </div>
+            <ul id="sellerQuestions" class="text-xs text-slate-300 space-y-2 list-decimal list-inside">
+              <li>Aracın güncel 5664 tramer mesajı ve varsa kaza fotoğrafları mevcut mu?</li>
+              <li>Ağır bakımları (triger, baskı-balata, şanzıman yağı) ne zaman ve hangi serviste yapıldı, faturası var mı?</li>
+              <li>Şasi, podye, direkler ve airbaglerde herhangi bir işlem veya açılma var mı?</li>
+              <li>Benim seçeceğim bağımsız TSE belgeli kurumsal ekspertize aracı gösterebilir miyiz?</li>
+              <li>Yedek anahtar, kitapçık ve son muayene raporu (km teyidi için) mevcut mu?</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- SEKME 5: EN YAKIN EKSPERTİZ -->
+        <section id="tab-ekspertiz" class="tab-section hidden space-y-5">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <div>
+                <h2 class="text-base font-bold text-white"><i class="fa-solid fa-shield-halved text-blue-400 mr-2"></i>En Yakın TSE Belgeli Kurumsal Ekspertizler</h2>
+                <p class="text-xs text-slate-400">Satıcının tanıdığına değil, bağımsız ve garantili ekspertize gidin.</p>
+              </div>
+              <select id="eksCity" onchange="renderEkspertiz()" class="rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-xs text-white">
+                <option value="Tümü">Tüm Şehirler</option>
+                <option value="İstanbul">İstanbul</option>
+                <option value="Ankara">Ankara</option>
+                <option value="İzmir">İzmir</option>
+                <option value="Bursa">Bursa</option>
+                <option value="Antalya">Antalya</option>
+              </select>
+            </div>
+            <div id="eksGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // --- VERİTABANI ---
+    const CAR_DB = {
+      "Volkswagen": { base: 1350000, models: ["Passat", "Golf", "Polo", "Tiguan", "T-Roc", "Jetta", "Caddy", "Arteon"] },
+      "Fiat": { base: 860000, models: ["Egea Sedan", "Egea Cross", "Egea Hatchback", "500X", "Doblo", "Fiorino", "Linea"] },
+      "Renault": { base: 980000, models: ["Clio", "Megane", "Taliant", "Austral", "Captur", "Fluence", "Kadjar"] },
+      "Toyota": { base: 1280000, models: ["Corolla", "Corolla Hybrid", "C-HR", "Yaris", "RAV4", "Auris", "Hilux"] },
+      "Honda": { base: 1320000, models: ["Civic", "CR-V", "HR-V", "City", "Jazz", "Accord"] },
+      "BMW": { base: 2350000, models: ["320i", "520i", "118i", "218i Gran Coupe", "X1", "X3", "420i"] },
+      "Mercedes-Benz": { base: 2450000, models: ["C200", "E200", "A200", "CLA200", "GLA200", "GLC"] },
+      "Audi": { base: 2250000, models: ["A3", "A4", "A5", "A6", "Q2", "Q3", "Q5"] },
+      "Peugeot": { base: 1180000, models: ["208", "308", "2008", "3008", "408", "508", "5008"] },
+      "Opel": { base: 1080000, models: ["Corsa", "Astra", "Mokka", "Crossland", "Grandland", "Insignia"] },
+      "Hyundai": { base: 1050000, models: ["i20", "i10", "Bayon", "Tucson", "Elantra", "Accent Blue"] },
+      "Ford": { base: 1120000, models: ["Focus", "Fiesta", "Puma", "Kuga", "Courier", "Mondeo"] },
+      "Skoda": { base: 1290000, models: ["Octavia", "Superb", "Kamiq", "Karoq", "Scala", "Fabia"] },
+      "Seat": { base: 1160000, models: ["Leon", "Ibiza", "Arona", "Ateca"] },
+      "Chery": { base: 1450000, models: ["Omoda 5", "Tiggo 7 Pro", "Tiggo 8 Pro"] },
+      "Togg": { base: 1620000, models: ["T10X V2 Uzun Menzil", "T10X V1 Standart Menzil"] },
+      "Tesla": { base: 1950000, models: ["Model Y", "Model 3"] },
+      "BYD": { base: 1580000, models: ["Atto 3", "Seal U DM-i", "Dolphin"] },
+      "Dacia": { base: 940000, models: ["Duster", "Sandero Stepway", "Jogger"] },
+      "Nissan": { base: 1240000, models: ["Qashqai", "Juke", "X-Trail", "Micra"] },
+      "Kia": { base: 1150000, models: ["Sportage", "Stonic", "Ceed", "Rio", "Picanto"] },
+      "Citroen": { base: 1090000, models: ["C3", "C3 Aircross", "C4", "C4 X", "C5 Aircross", "C-Elysee"] },
+      "Volvo": { base: 2400000, models: ["XC40", "XC60", "S60", "S90", "V40"] },
+      "Suzuki": { base: 1060000, models: ["Vitara", "Swift", "S-Cross"] },
+      "Mazda": { base: 1180000, models: ["Mazda 3", "CX-3", "CX-5"] },
+      "Mini": { base: 1550000, models: ["Cooper", "Countryman"] },
+      "Jeep": { base: 1480000, models: ["Renegade", "Compass", "Avenger"] },
+      "Cupra": { base: 1790000, models: ["Formentor", "Leon"] },
+      "MG": { base: 1290000, models: ["ZS", "HS", "MG4"] },
+      "Alfa Romeo": { base: 1680000, models: ["Tonale", "Giulia", "Giulietta"] },
+      "Diğer": { base: 1000000, models: ["Özel Model"] }
+    };
+
+    const SAMPLES = [
+      "2020 Volkswagen Passat 1.5 TSI Impression, 85.000 km, Ankara. Sadece sağ ön çamurluk lokal boyalı, değişen yok. 14.500 TL yeni tarihli tramer var. Cam tavan ve hayalet ekran mevcut. İlan Fiyatı: 1.360.000 TL",
+      "2022 Fiat Egea Sedan 1.4 Fire Urban, 42.000 km, Eskişehir. Hatasız boyasız değişensiz, tramer 0 TL. İlk sahibinden servis bakımlı. İlan Fiyatı: 885.000 TL",
+      "2019 Peugeot 3008 1.2 PureTech Allure, 118.000 km, İstanbul. Acil nakit ihtiyacından satılık, ekspertize açık ama vaktim yok ciddi alıcı gelsin. 3 parça boya, 2 değişen, 85.000 TL tramer var. İlan Fiyatı: 1.240.000 TL"
+    ];
+
+    const CITIES = [
+      { name: "Ankara", score: 94, paintless: "%62", avgKm: "14.200 km/yıl", climate: "Kuru iklim (Pas riski düşük)", priceDiff: "-%2", note: "Memur/aile kullanımı yoğun, bakımlı araç bulma oranı en yüksek il." },
+      { name: "Eskişehir", score: 92, paintless: "%64", avgKm: "12.800 km/yıl", climate: "Kuru iklim", priceDiff: "0%", note: "Düşük trafikli şehir yapısı sayesinde lokal boya oranı çok düşük." },
+      { name: "Konya", score: 90, paintless: "%59", avgKm: "15.100 km/yıl", climate: "Kuru iklim", priceDiff: "-%3", note: "Geniş yollar ve düzenli bakım kültürü, özellikle VW/Toyota grubunda güçlü." },
+      { name: "Kayseri", score: 88, paintless: "%57", avgKm: "14.800 km/yıl", climate: "Kuru iklim", priceDiff: "-%2", note: "Temiz aile araçları bol, fiyatlar piyasaya göre dengeli." },
+      { name: "Bursa", score: 82, paintless: "%48", avgKm: "16.500 km/yıl", climate: "Ilıman", priceDiff: "-%1", note: "İlan çeşitliliği yüksek, sanayi ve al-sat döngüsü hızlı." },
+      { name: "İzmir", score: 80, paintless: "%45", avgKm: "15.900 km/yıl", climate: "Nemli / Güneş yanığı riski", priceDiff: "+%2", note: "Ege araçlarında alt takım nem kontrolü ve vernik/güneş yanığı kontrolü önemli." },
+      { name: "Antalya", score: 79, paintless: "%46", avgKm: "16.200 km/yıl", climate: "Yüksek güneş / Nem", priceDiff: "+%1", note: "Filo/rent-a-car geçmişi mutlaka 5664 ve muayene kayıtlarından teyit edilmeli." },
+      { name: "İstanbul", score: 74, paintless: "%36", avgKm: "18.400 km/yıl", climate: "Nemli / Yoğun trafik", priceDiff: "-%4", note: "En ucuz ve en bol seçenek burada; ancak tampon/çamurluk lokal boya oranı yüksektir." },
+      { name: "Gaziantep", score: 76, paintless: "%42", avgKm: "17.900 km/yıl", climate: "Kuru", priceDiff: "-%4", note: "Agresif fiyatlar bulunur, detaylı şasi/airbag ekspertizi önerilir." }
+    ];
+
+    const CHRONICS = [
+      { title: "VW / Skoda / Seat — 1.5 TSI & 1.6 TDI (DSG)", risk: "Orta-Yüksek", items: ["Yokuş kalkışta 1-2 geçişinde kavrama titremesi kontrol edilmeli.", "Mekatronik basınç tüpü ve yazılım geçmişi sorulmalı.", "1.6 TDI modellerde EGR ve DPF tıkanıklığı kontrol edilmeli."] },
+      { title: "Peugeot / Opel / Citroen — 1.2 PureTech", risk: "Yüksek", items: ["Yağ içinde çalışan triger kayışının 60.000 km civarında değişip değişmediği faturalı teyit edilmeli.", "Yağ süzgeci temizliği ve yağ eksiltme geçmişi sorulmalı."] },
+      { title: "Fiat Egea — 1.4 Fire & 1.3 / 1.6 Multijet", risk: "Düşük", items: ["1.4 Fire motorlarda yüksek devirde yağ eksiltme normal sınırlarda mı kontrol edilmeli.", "Multijet dizellerde enjektör ve turbo ıslık sesi dinlenmeli."] },
+      { title: "Renault — 1.5 dCi & EDC Şanzıman", risk: "Düşük-Orta", items: ["1.5 dCi motor çok dayanıklıdır; 120 bin km üzeri enjektör bakımı sorulmalı.", "EDC şanzımanda vites geçiş gecikmesi ve kavrama testi yapılmalı."] },
+      { title: "Toyota Corolla Hybrid & Honda Civic CVT", risk: "Çok Düşük", items: ["Toyota hibritte yetkili servis hibrit pil sağlık testi (Hybrid Health Check) belgesi istenmeli.", "Honda Civic FC5 kasalarda C sütunu göçük kontrolü ve CVT şanzıman yağı değişimi sorulmalı."] },
+      { title: "Chery (Omoda 5 / Tiggo) & Togg T10X", risk: "Düşük", items: ["Multimedya ve sürüş destek yazılımlarının son sürüme güncellendiği teyit edilmeli.", "Togg T10X'te batarya sağlık yüzdesi (SoH) ve hızlı şarj (DC) geçmişi kontrol edilmeli."] }
+    ];
+
+    const EKSPERTIZ = [
+      { name: "Otorapor Oto Ekspertiz — Maslak", city: "İstanbul", district: "Sarıyer", rating: "4.8", tse: "TSE-HYB Belgeli", phone: "0850 255 00 00" },
+      { name: "Tarcanlar Oto Ekspertiz — Ümraniye", city: "İstanbul", district: "Ümraniye", rating: "4.9", tse: "TSE-HYB Belgeli", phone: "0216 555 00 00" },
+      { name: "Pilot Garage — Çankaya / Şaşmaz", city: "Ankara", district: "Etimesgut", rating: "4.8", tse: "TSE-HYB Belgeli", phone: "0312 555 00 00" },
+      { name: "Dynobil Oto Ekspertiz — Bornova", city: "İzmir", district: "Bornova", rating: "4.7", tse: "TSE-HYB Belgeli", phone: "0232 555 00 00" },
+      { name: "Otorapor — Nilüfer", city: "Bursa", district: "Nilüfer", rating: "4.8", tse: "TSE-HYB Belgeli", phone: "0224 555 00 00" },
+      { name: "Pilot Garage — Muratpaşa", city: "Antalya", district: "Muratpaşa", rating: "4.7", tse: "TSE-HYB Belgeli", phone: "0242 555 00 00" }
+    ];
+
+    // --- YARDIMCI FONKSİYONLAR ---
+    const fmt = (n) => new Intl.NumberFormat('tr-TR').format(Math.round(n)) + ' TL';
+
+    function switchTab(id) {
+      document.querySelectorAll('.tab-section').forEach(s => s.classList.add('hidden'));
+      document.getElementById('tab-' + id).classList.remove('hidden');
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        if (b.dataset.tab === id) {
+          b.classList.remove('bg-slate-800', 'text-slate-300');
+          b.classList.add('bg-blue-600', 'text-white');
+        } else {
+          b.classList.remove('bg-blue-600', 'text-white');
+          b.classList.add('bg-slate-800', 'text-slate-300');
+        }
+      });
+    }
+
+    function setViewMode(mode) {
+      const wrapper = document.getElementById('appWrapper');
+      const island = document.getElementById('iosIsland');
+      const inner = document.getElementById('appInner');
+      if (mode === 'ios') {
+        wrapper.className = 'iphone-frame bg-slate-950 p-3 pt-12 overflow-y-auto no-scrollbar';
+        island.classList.remove('hidden');
+        document.getElementById('btnIos').className = 'px-3 py-1.5 rounded-lg bg-blue-600 text-white transition';
+        document.getElementById('btnWeb').className = 'px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition';
+      } else {
+        wrapper.className = 'max-w-6xl mx-auto transition-all duration-300';
+        island.classList.add('hidden');
+        document.getElementById('btnWeb').className = 'px-3 py-1.5 rounded-lg bg-blue-600 text-white transition';
+        document.getElementById('btnIos').className = 'px-3 py-1.5 rounded-lg text-slate-300 hover:text-white transition';
+      }
+    }
+
+    let isDark = true;
+    function toggleTheme() {
+      isDark = !isDark;
+      const body = document.getElementById('mainBody');
+      if (!isDark) {
+        body.classList.remove('bg-slate-950', 'text-slate-100');
+        body.classList.add('bg-slate-100', 'text-slate-900');
+        document.getElementById('btnTheme').innerHTML = '<i class="fa-solid fa-moon"></i>';
+      } else {
+        body.classList.add('bg-slate-950', 'text-slate-100');
+        body.classList.remove('bg-slate-100', 'text-slate-900');
+        document.getElementById('btnTheme').innerHTML = '<i class="fa-solid fa-sun"></i>';
+      }
+    }
+
+    function loadSample(idx) {
+      document.getElementById('adInput').value = SAMPLES[idx];
+      analyzeAdText();
+    }
+
+    function calculatePrice(brand, year, km, paint, changed, tramer) {
+      const base = (CAR_DB[brand] ? CAR_DB[brand].base : 1100000);
+      const yearFactor = 1 + (year - 2021) * 0.065;
+      const kmPenalty = Math.max(0, (km - 60000) / 10000) * 14000;
+      const damagePenalty = (paint * 18000) + (changed * 38000) + (tramer * 0.45);
+      const marketAvg = Math.max(350000, (base * yearFactor) - kmPenalty - damagePenalty);
+      const fastSale = marketAvg * 0.94; // %6 pazarlık / hızlı satış
+      const highBand = marketAvg * 1.06;
+      return { fastSale, marketAvg, highBand };
+    }
+
+    function renderValuationHTML(data) {
+      const { brand, model, year, km, paint, changed, tramer, asking, flags } = data;
+      const { fastSale, marketAvg, highBand } = calculatePrice(brand, year, km, paint, changed, tramer);
+      const noter = 2250, sigorta = 14500, ekspertiz = 6500;
+      const netCost = (asking || marketAvg) + noter + sigorta + ekspertiz;
+
+      let badge = '';
+      if (asking) {
+        if (asking <= fastSale * 1.01) badge = '<span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 text-xs font-bold">🔥 FIRSAT FİYAT</span>';
+        else if (asking <= marketAvg * 1.03) badge = '<span class="px-2.5 py-1 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-bold">✅ PİYASA DEĞERİNDE</span>';
+        else badge = '<span class="px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-300 text-xs font-bold">⚠️ PİYASADAN PAHALI</span>';
+      }
+
+      const flagsHTML = flags && flags.length ? `
+        <div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-200 space-y-1">
+          <div class="font-bold text-rose-400"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Tespit Edilen Kırmızı Bayraklar</div>
+          ${flags.map(f => `<div>• ${f}</div>`).join('')}
+        </div>` : '';
+
+      const shareText = encodeURIComponent(`OtoEmsal AI Raporu: ${year} ${brand} ${model} (${km} km) | Hızlı Satış: ${fmt(fastSale)} | Piyasa Ort: ${fmt(marketAvg)}`);
+
+      return `
+        <div class="space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <h3 class="text-base font-extrabold text-white">${year} ${brand} ${model}</h3>
+              <p class="text-xs text-slate-400">${new Intl.NumberFormat('tr-TR').format(km)} km • ${paint} Boya • ${changed} Değişen • ${fmt(tramer)} Tramer</p>
+            </div>
+            ${badge}
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
+              <div class="text-[11px] text-emerald-300 font-semibold">Hızlı Satış (-%6 Pazarlık)</div>
+              <div class="text-lg font-extrabold text-white mt-0.5">${fmt(fastSale)}</div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-blue-500/15 border border-blue-500/40">
+              <div class="text-[11px] text-blue-300 font-semibold">Piyasa Ortalaması</div>
+              <div class="text-lg font-extrabold text-white mt-0.5">${fmt(marketAvg)}</div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-800/80 border border-slate-700">
+              <div class="text-[11px] text-slate-300 font-semibold">Üst Bant (Tok Satıcı)</div>
+              <div class="text-lg font-extrabold text-white mt-0.5">${fmt(highBand)}</div>
+            </div>
+          </div>
+
+          ${flagsHTML}
+
+          <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span class="text-slate-400">Cebinden Çıkacak Net Maliyet (Noter + Sigorta + Ekspertiz dahil):</span>
+              <strong class="text-white ml-1">${fmt(netCost)}</strong>
+            </div>
+            <a href="https://wa.me/?text=${shareText}" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold">
+              <i class="fa-brands fa-whatsapp mr-1"></i>Paylaş
+            </a>
+          </div>
+        </div>
+      `;
+    }
+
+    function analyzeAdText() {
+      const txt = document.getElementById('adInput').value.trim();
+      if (!txt) return alert('Lütfen bir ilan metni yapıştırın.');
+      const lower = txt.toLowerCase();
+
+      let brand = "Volkswagen", model = "Passat";
+      for (const b of Object.keys(CAR_DB)) {
+        if (lower.includes(b.toLowerCase())) {
+          brand = b;
+          model = CAR_DB[b].models.find(m => lower.includes(m.toLowerCase().split(' ')[0])) || CAR_DB[b].models[0];
+          break;
+        }
+      }
+      const yearMatch = txt.match(/20(0\d|1\d|2[0-6])/);
+      const year = yearMatch ? parseInt(yearMatch[0]) : 2020;
+
+      const kmMatch = txt.match(/(\d{2,3})[.,]?(\d{3})\s*km/i);
+      const km = kmMatch ? parseInt(kmMatch[1] + kmMatch[2]) : 85000;
+
+      const paintMatch = txt.match(/(\d+)\s*(parça\s*)?(lokal\s*)?boya/i);
+      const paint = paintMatch ? parseInt(paintMatch[1]) : (lower.includes('lokal') ? 1 : 0);
+
+      const chgMatch = txt.match(/(\d+)\s*(parça\s*)?değişen/i);
+      const changed = chgMatch ? parseInt(chgMatch[1]) : 0;
+
+      const tramerMatch = txt.match(/(\d{1,3})[.,](\d{3})\s*tl\s*(yeni\s*tarihli\s*)?tramer/i);
+      const tramer = tramerMatch ? parseInt(tramerMatch[1] + tramerMatch[2]) : 0;
+
+      const priceMatch = txt.match(/(\d)[.,](\d{3})[.,](\d{3})\s*tl/i) || txt.match(/(\d{3})[.,](\d{3})\s*tl/i);
+      let asking = 0;
+      if (priceMatch) {
+        asking = parseInt(priceMatch[0].replace(/[^\d]/g, ''));
+      }
+
+      const flags = [];
+      if (lower.includes('vaktim yok')) flags.push('"Vaktim yok" ifadesi: Satıcı detaylı ekspertizden kaçınıyor olabilir.');
+      if (lower.includes('acil nakit')) flags.push('"Acil nakit" vurgusu: Fiyat avantajı olabilir ancak şasi/tramer teyidi şart.');
+      if (tramer >= 50000) flags.push('Yüksek tramer tutarı tespit edildi. 5664 detaylı hasar kalemlerini isteyin.');
+      if (lower.includes('puretech') && km > 60000) flags.push('1.2 PureTech motor: Triger kayışı değişim faturasını mutlaka sorun.');
+
+      document.getElementById('aiResultPanel').innerHTML = renderValuationHTML({ brand, model, year, km, paint, changed, tramer, asking, flags });
+    }
+
+    function populateBrands() {
+      const bSel = document.getElementById('mBrand');
+      bSel.innerHTML = Object.keys(CAR_DB).map(b => `<option value="${b}">${b}</option>`).join('');
+      populateModels();
+    }
+
+    function populateModels() {
+      const brand = document.getElementById('mBrand').value;
+      const mSel = document.getElementById('mModel');
+      mSel.innerHTML = CAR_DB[brand].models.map(m => `<option value="${m}">${m}</option>`).join('');
+    }
+
+    function runManualValuation() {
+      const data = {
+        brand: document.getElementById('mBrand').value,
+        model: document.getElementById('mModel').value,
+        year: parseInt(document.getElementById('mYear').value) || 2021,
+        km: parseInt(document.getElementById('mKm').value) || 75000,
+        paint: parseInt(document.getElementById('mPaint').value) || 0,
+        changed: parseInt(document.getElementById('mChanged').value) || 0,
+        tramer: parseInt(document.getElementById('mTramer').value) || 0,
+        asking: parseInt(document.getElementById('mAsking').value) || 0,
+        flags: []
+      };
+      document.getElementById('manualResultPanel').innerHTML = renderValuationHTML(data);
+    }
+
+    function renderCities() {
+      const sort = document.getElementById('citySort').value;
+      const list = [...CITIES].sort((a, b) => {
+        if (sort === 'paintless') return parseInt(b.paintless.replace(/\D/g,'')) - parseInt(a.paintless.replace(/\D/g,''));
+        if (sort === 'price') return parseInt(a.priceDiff) - parseInt(b.priceDiff);
+        return b.score - a.score;
+      });
+      document.getElementById('cityGrid').innerHTML = list.map(c => `
+        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-white text-sm">${c.name}</h3>
+            <span class="px-2 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 text-xs font-extrabold">${c.score}/100</span>
+          </div>
+          <div class="flex gap-2 text-[11px] text-slate-400">
+            <span>Boyasız: <b class="text-slate-200">${c.paintless}</b></span>
+            <span>•</span>
+            <span>Fiyat: <b class="text-blue-300">${c.priceDiff}</b></span>
+          </div>
+          <p class="text-[11px] text-slate-400">${c.note}</p>
+        </div>
+      `).join('');
+    }
+
+    function calcIntercity() {
+      const local = parseInt(document.getElementById('cLocal').value) || 0;
+      const remote = parseInt(document.getElementById('cRemote').value) || 0;
+      const travel = parseInt(document.getElementById('cTravel').value) || 0;
+      const profit = local - (remote + travel);
+      const el = document.getElementById('intercityResult');
+      if (profit > 0) {
+        el.innerHTML = `<div class="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold">✅ Başka ilden almak yol masrafı dahil ${fmt(profit)} net avantaj sağlıyor.</div>`;
+      } else {
+        el.innerHTML = `<div class="p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 font-bold">⚠️ Yol masrafıyla birlikte ${fmt(Math.abs(profit))} daha pahalıya geliyor; kendi ilinizden bakmak daha mantıklı.</div>`;
+      }
+    }
+
+    function renderChronic() {
+      const q = document.getElementById('chronicSearch').value.toLowerCase();
+      const filtered = CHRONICS.filter(c => c.title.toLowerCase().includes(q) || c.items.some(i => i.toLowerCase().includes(q)));
+      document.getElementById('chronicGrid').innerHTML = filtered.map(c => `
+        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="font-bold text-white text-sm">${c.title}</h3>
+            <span class="text-[10px] px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 font-bold">Risk: ${c.risk}</span>
+          </div>
+          <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+            ${c.items.map(i => `<li>${i}</li>`).join('')}
+          </ul>
+        </div>
+      `).join('');
+    }
+
+    function copyQuestions() {
+      const text = Array.from(document.querySelectorAll('#sellerQuestions li')).map((li, i) => `${i+1}. ${li.innerText}`).join('\n');
+      navigator.clipboard.writeText(text);
+      alert('Satıcıya sorulacak 5 kritik soru kopyalandı! WhatsApp\'a yapıştırabilirsiniz.');
+    }
+
+    function renderEkspertiz() {
+      const city = document.getElementById('eksCity').value;
+      const list = city === 'Tümü' ? EKSPERTIZ : EKSPERTIZ.filter(e => e.city === city);
+      document.getElementById('eksGrid').innerHTML = list.map(e => `
+        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2.5">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <h3 class="font-bold text-white text-sm">${e.name}</h3>
+              <p class="text-[11px] text-slate-400">${e.district}, ${e.city} • ${e.tse}</p>
+            </div>
+            <span class="px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 text-xs font-bold">★ ${e.rating}</span>
+          </div>
+          <div class="flex gap-2">
+            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.name + ' ' + e.city)}" target="_blank" class="flex-1 text-center py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white">Yol Tarifi</a>
+            <button onclick="alert('OtoEmsal %10 İndirim Kodunuz: OTOEMSAL10')" class="flex-1 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-emerald-300">%10 İndirim</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Başlatma
+    populateBrands();
+    renderCities();
+    renderChronic();
+    renderEkspertiz();
+  </script>
+</body>
+</html>
