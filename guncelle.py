@@ -9,11 +9,10 @@ def aktif_modelleri_bul():
     adaylar = []
     for m in client.models.list():
         ad = m.name.replace("models/", "")
-        if "gemini" in ad and "flash" in ad and not any(x in ad for x in ["tts", "image", "audio", "live", "embedding"]):
+        if "gemini" in ad and "flash" in ad and not any(x in ad for x in ["tts", "image", "audio", "live", "embedding", "lite"]):
             adaylar.append(ad)
-    # En yeni sürümü başa al
     adaylar.sort(reverse=True)
-    return adaylar
+    return adaylar[:3]
 
 def ilani_temizle(aciklama: str, modeller: list) -> dict:
     prompt = f"""
@@ -24,22 +23,23 @@ def ilani_temizle(aciklama: str, modeller: list) -> dict:
     """
     son_hata = None
     for model_adi in modeller:
+        print(f"Deneniyor: {model_adi}", flush=True)
         try:
             response = client.models.generate_content(
                 model=model_adi,
                 contents=prompt,
                 config={"response_mime_type": "application/json"}
             )
-            print(f"Kullanılan model: {model_adi}")
+            print(f"Başarılı model: {model_adi}", flush=True)
             return json.loads(response.text)
         except Exception as e:
+            print(f"{model_adi} hata verdi: {e}", flush=True)
             son_hata = e
-            continue
     raise son_hata
 
 def main():
     modeller = aktif_modelleri_bul()
-    print("Bulunan aktif modeller:", modeller[:5])
+    print("Seçilen modeller:", modeller, flush=True)
 
     ham_ilanlar = [
         {
@@ -80,7 +80,7 @@ def main():
             **temiz
         }
         supabase.table("arac_ilanlari").upsert(kayit, on_conflict="ilan_id").execute()
-        print(f"Güncellendi: {ilan['marka']} {ilan['model']}")
+        print(f"Supabase'e yazıldı: {ilan['marka']} {ilan['model']}", flush=True)
         time.sleep(1)
 
 if __name__ == "__main__":
