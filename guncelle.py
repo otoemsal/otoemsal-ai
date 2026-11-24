@@ -16,8 +16,12 @@ def aktif_modelleri_bul():
             if not any(x in ad for x in ["preview", "tts", "image", "audio", "live", "embedding"]):
                 modeller.append(ad)
     modeller.sort(reverse=True)
-    print("Kararlı modeller:", modeller[:5], flush=True)
-    return modeller[:5]
+    # En kararlı ve hızlı flash modellerini başa al
+    oncelikli = [m for m in modeller if "lite" in m or "2.5" in m or "latest" in m]
+    diger = [m for m in modeller if m not in oncelikli]
+    secilen = (oncelikli + diger)[:5]
+    print("Kararlı modeller:", secilen, flush=True)
+    return secilen
 
 def ilani_temizle(aciklama: str, modeller: list) -> dict:
     prompt = f"""
@@ -30,23 +34,37 @@ def ilani_temizle(aciklama: str, modeller: list) -> dict:
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {"responseMimeType": "application/json"}
     }
-    for model_adi in modeller:
-        print(f"Deneniyor: {model_adi}", flush=True)
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_adi}:generateContent?key={GEMINI_KEY}"
-        try:
-            r = requests.post(url, json=payload, timeout=20)
-            if r.status_code == 200:
-                print(f"Başarılı: {model_adi}", flush=True)
-                metin = r.json()["candidates"][0]["content"]["parts"][0]["text"]
-                return json.loads(metin)
-            print(f"{model_adi} atlandı (Kod {r.status_code})", flush=True)
-        except Exception as e:
-            print(f"{model_adi} zaman aşımı/hata: {e}", flush=True)
-        time.sleep(2)
+    for deneme in range(2):
+        for model_adi in modeller:
+            print(f"Deneniyor: {model_adi} (Deneme {deneme + 1})", flush=True)
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_adi}:generateContent?key={GEMINI_KEY}"
+            try:
+                r = requests.post(url, json=payload, timeout=25)
+                if r.status_code == 200:
+                    print(f"Başarılı: {model_adi}", flush=True)
+                    metin = r.json()["candidates"][0]["content"]["parts"][0]["text"]
+                    return json.loads(metin)
+                if r.status_code in (429, 503):
+                    print(f"{model_adi} kota/yoğunluk (Kod {r.status_code}), 10 sn bekleniyor...", flush=True)
+                    time.sleep(10)
+                    continue
+                print(f"{model_adi} atlandı (Kod {r.status_code})", flush=True)
+            except Exception as e:
+                print(f"{model_adi} zaman aşımı/hata: {e}", flush=True)
+                time.sleep(4)
     raise RuntimeError("Tüm modeller şu an meşgul veya kota dolu.")
 
 def main():
     modeller = aktif_modelleri_bul()
+
+    mevcut_idler = set()
+    try:
+        res = supabase.table("arac_ilanlari").select("ilan_id").execute()
+        for row in (res.data or []):
+            if row.get("ilan_id"):
+                mevcut_idler.add(row["ilan_id"])
+    except Exception as e:
+        print("Mevcut kayıtlar okunurken uyarı:", e, flush=True)
 
     ham_ilanlar = [
         {
@@ -184,6 +202,9 @@ def main():
     ]
 
     for ilan in ham_ilanlar:
+        if ilan["ilan_id"] in mevcut_idler:
+            print(f"Zaten kayıtlı, atlandı: {ilan['ilan_id']}", flush=True)
+            continue
         temiz = ilani_temizle(ilan["aciklama"], modeller)
         kayit = {
             "ilan_id": ilan["ilan_id"],
@@ -198,7 +219,7 @@ def main():
         }
         supabase.table("arac_ilanlari").upsert(kayit, on_conflict="ilan_id").execute()
         print(f"Supabase'e yazıldı: {ilan['marka']} {ilan['model']}", flush=True)
-        time.sleep(1)
+        time.sleep(5)
 
 if __name__ == "__main__":
     main()
