@@ -1,18 +1,24 @@
-import os, json, time
-from google import genai
+import os, json, time, requests
 from supabase import create_client
 
-client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+GEMINI_KEY = os.environ["GEMINI_API_KEY"]
 supabase = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_KEY"])
 
 def aktif_modelleri_bul():
-    adaylar = []
-    for m in client.models.list():
-        ad = m.name.replace("models/", "")
-        if "gemini" in ad and "flash" in ad and not any(x in ad for x in ["tts", "image", "audio", "live", "embedding", "lite"]):
-            adaylar.append(ad)
-    adaylar.sort(reverse=True)
-    return adaylar[:3]
+    url = f"https://generativelanguage.googleapis.com/v1beta/models?key={GEMINI_KEY}"
+    r = requests.get(url, timeout=15)
+    r.raise_for_status()
+    modeller = []
+    for m in r.json().get("models", []):
+        ad = m["name"].replace("models/", "")
+        destek = m.get("supportedGenerationMethods", [])
+        # Preview ve medya modellerini ele, sadece kararlı Flash modellerini al
+        if "generateContent" in destek and "gemini" in ad and "flash" in ad:
+            if not any(x in ad for x in ["preview", "tts", "image", "audio", "live", "embedding"]):
+                modeller.append(ad)
+    modeller.sort(reverse=True)
+    print("Kararlı modeller:", modeller[:5], flush=True)
+    return modeller[:5]
 
 def ilani_temizle(aciklama: str, modeller: list) -> dict:
     prompt = f"""
@@ -21,25 +27,27 @@ def ilani_temizle(aciklama: str, modeller: list) -> dict:
     boya_sayisi (int), degisen_sayisi (int), agir_hasar (bool), tramer (int), ekstralar (list of strings).
     İlan: {aciklama}
     """
-    son_hata = None
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {"responseMimeType": "application/json"}
+    }
     for model_adi in modeller:
         print(f"Deneniyor: {model_adi}", flush=True)
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_adi}:generateContent?key={GEMINI_KEY}"
         try:
-            response = client.models.generate_content(
-                model=model_adi,
-                contents=prompt,
-                config={"response_mime_type": "application/json"}
-            )
-            print(f"Başarılı model: {model_adi}", flush=True)
-            return json.loads(response.text)
+            r = requests.post(url, json=payload, timeout=20)
+            if r.status_code == 200:
+                print(f"Başarılı: {model_adi}", flush=True)
+                metin = r.json()["candidates"][0]["content"]["parts"][0]["text"]
+                return json.loads(metin)
+            print(f"{model_adi} atlandı (Kod {r.status_code})", flush=True)
         except Exception as e:
-            print(f"{model_adi} hata verdi: {e}", flush=True)
-            son_hata = e
-    raise son_hata
+            print(f"{model_adi} zaman aşımı/hata: {e}", flush=True)
+        time.sleep(2)
+    raise RuntimeError("Tüm modeller şu an meşgul veya kota dolu.")
 
 def main():
     modeller = aktif_modelleri_bul()
-    print("Seçilen modeller:", modeller, flush=True)
 
     ham_ilanlar = [
         {
