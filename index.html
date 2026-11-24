@@ -37,7 +37,6 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen transition-colors duration-300" id="mainBody">
 
-  <!-- Üst Kontrol Çubuğu -->
   <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3">
     <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-2.5">
@@ -53,7 +52,6 @@
         </div>
       </div>
 
-      <!-- Görünüm & Tema Kontrolleri -->
       <div class="flex items-center gap-2">
         <div class="bg-slate-800 p-1 rounded-xl flex items-center text-xs font-semibold">
           <button onclick="setViewMode('web')" id="btnWeb" class="px-3 py-1.5 rounded-lg bg-blue-600 text-white transition">
@@ -70,14 +68,11 @@
     </div>
   </header>
 
-  <!-- Ana Uygulama Konteyneri -->
   <main class="py-5 px-3" id="outerContainer">
     <div id="appWrapper" class="max-w-6xl mx-auto transition-all duration-300">
-      <!-- iOS Dynamic Island (Sadece iOS modunda görünür) -->
       <div id="iosIsland" class="hidden dynamic-island"></div>
 
       <div id="appInner" class="w-full h-full flex flex-col">
-        <!-- Sekme Menüsü -->
         <nav id="topNav" class="flex gap-1.5 overflow-x-auto no-scrollbar pb-3 mb-4 border-b border-slate-800">
           <button onclick="switchTab('ai')" data-tab="ai" class="tab-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white">
             <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>AI İlan Analiz
@@ -99,46 +94,41 @@
           </button>
         </nav>
 
-        <!-- SEKME 1: AI İLAN ANALİZ -->
         <section id="tab-ai" class="tab-section space-y-5">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-            <!-- Sol: İlan Girişi -->
             <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
               <div>
                 <h2 class="text-base font-bold text-white flex items-center gap-2">
                   <i class="fa-solid fa-robot text-blue-400"></i> Ham İlan & 5664 Çözümleyici
                 </h2>
-                <p class="text-xs text-slate-400 mt-1">İlan açıklamasını yapıştırın; boya, değişen, tramer ve gizli kırmızı bayrakları saniyeler içinde çıkaralım.</p>
+                <p class="text-xs text-slate-400 mt-1">İlan açıklamasını yapıştırın; veritabanındaki canlı emsallerle kıyaslayıp fiyat konumunu çıkaralım.</p>
               </div>
 
-              <!-- Hazır Örnekler -->
               <div class="flex flex-wrap gap-1.5">
                 <button onclick="loadSample(0)" class="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-blue-300 font-medium">Örnek 1: Passat</button>
                 <button onclick="loadSample(1)" class="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-medium">Örnek 2: Egea</button>
                 <button onclick="loadSample(2)" class="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 font-medium">Örnek 3: Riskli İlan</button>
               </div>
 
-              <textarea id="adInput" rows="6" placeholder="Örn: 2020 Volkswagen Passat 1.5 TSI Impression, 85.000 km, Ankara. Sağ ön çamurluk lokal boyalı, 18.000 TL yeni tarihli tramer var. Fiyat 1.380.000 TL..." class="w-full rounded-xl bg-slate-950 border border-slate-700 focus:border-blue-500 focus:outline-none p-3.5 text-sm text-slate-100 placeholder-slate-500"></textarea>
+              <textarea id="adInput" rows="6" placeholder="Örn: 2020 Volkswagen Passat 1.5 TSI Impression, 85.000 km, Ankara. Sağ ön çamurluk lokal boyalı, 14.500 TL tramer var. Fiyat 1.580.000 TL..." class="w-full rounded-xl bg-slate-950 border border-slate-700 focus:border-blue-500 focus:outline-none p-3.5 text-sm text-slate-100 placeholder-slate-500"></textarea>
 
               <button onclick="analyzeAdText()" class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-blue-600/20 transition flex items-center justify-center gap-2">
-                <i class="fa-solid fa-magnifying-glass-chart"></i> Yapay Zeka ile Analiz Et
+                <i class="fa-solid fa-magnifying-glass-chart"></i> Canlı Emsallerle Analiz Et
               </button>
             </div>
 
-            <!-- Sağ: Sonuç Paneli -->
             <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-5" id="aiResultPanel">
               <div class="h-full flex flex-col items-center justify-center text-center py-10 text-slate-400">
                 <div class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center mb-3 text-blue-400 text-2xl">
                   <i class="fa-solid fa-chart-line"></i>
                 </div>
-                <p class="font-semibold text-slate-200">Analiz Sonucu Burada Görünecek</p>
-                <p class="text-xs max-w-sm mt-1">Yukarıdaki örnek ilanlardan birine tıklayın veya kendi baktığınız ilanı yapıştırıp analiz edin.</p>
+                <p class="font-semibold text-slate-200">Canlı Emsal Analizi Burada Görünecek</p>
+                <p class="text-xs max-w-sm mt-1">Supabase'deki güncel ilan verileriyle emsal ortalaması hesaplanır.</p>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- SEKME 2: CANLI PİYASA (SUPABASE) -->
         <section id="tab-live" class="tab-section hidden space-y-5">
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
             <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -158,14 +148,13 @@
           </div>
         </section>
 
-        <!-- SEKME 3: MANUEL SORGU -->
         <section id="tab-manual" class="tab-section hidden space-y-5">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
             <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3.5">
-              <h2 class="text-base font-bold text-white"><i class="fa-solid fa-car text-blue-400 mr-2"></i>Manuel Araç Değerleme</h2>
+              <h2 class="text-base font-bold text-white"><i class="fa-solid fa-car text-blue-400 mr-2"></i>Canlı Emsal Sorgulama</h2>
               <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label class="text-[11px] text-slate-400 font-semibold">Marka (31 Marka)</label>
+                  <label class="text-[11px] text-slate-400 font-semibold">Marka</label>
                   <select id="mBrand" onchange="populateModels()" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white"></select>
                 </div>
                 <div>
@@ -176,11 +165,11 @@
               <div class="grid grid-cols-2 gap-3">
                 <div>
                   <label class="text-[11px] text-slate-400 font-semibold">Model Yılı</label>
-                  <input id="mYear" type="number" value="2021" min="2000" max="2026" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
+                  <input id="mYear" type="number" value="2020" min="2000" max="2026" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
                 </div>
                 <div>
                   <label class="text-[11px] text-slate-400 font-semibold">Kilometre</label>
-                  <input id="mKm" type="number" value="75000" step="5000" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
+                  <input id="mKm" type="number" value="85000" step="5000" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
                 </div>
               </div>
               <div class="grid grid-cols-3 gap-2.5">
@@ -194,29 +183,28 @@
                 </div>
                 <div>
                   <label class="text-[11px] text-slate-400 font-semibold">Tramer (TL)</label>
-                  <input id="mTramer" type="number" value="15000" step="5000" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
+                  <input id="mTramer" type="number" value="14500" step="5000" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
                 </div>
               </div>
               <div>
-                <label class="text-[11px] text-slate-400 font-semibold">Baktığınız İlan Fiyatı (Opsiyonel - Fırsat Kontrolü)</label>
-                <input id="mAsking" type="number" placeholder="Örn: 1250000" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
+                <label class="text-[11px] text-slate-400 font-semibold">Baktığınız İlan Fiyatı (Opsiyonel)</label>
+                <input id="mAsking" type="number" placeholder="Örn: 1580000" class="w-full mt-1 rounded-xl bg-slate-950 border border-slate-700 p-2.5 text-sm text-white" />
               </div>
               <button onclick="runManualValuation()" class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm transition">
-                Emsalleri ve Piyasa Değerini Hesapla
+                Canlı Emsalleri Getir
               </button>
             </div>
 
             <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-5" id="manualResultPanel">
               <div class="h-full flex flex-col items-center justify-center text-center py-10 text-slate-400">
                 <i class="fa-solid fa-scale-balanced text-3xl text-blue-400 mb-3"></i>
-                <p class="font-semibold text-slate-200">Emsal & Fiyat Raporu</p>
-                <p class="text-xs mt-1">Soldan araç bilgilerini seçip hesapla butonuna basın.</p>
+                <p class="font-semibold text-slate-200">Canlı Emsal Raporu</p>
+                <p class="text-xs mt-1">Veritabanındaki güncel ilanlara göre emsal ortalaması çıkarılır.</p>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- SEKME 4: İL TEMİZLİK ENDEKSİ -->
         <section id="tab-cities" class="tab-section hidden space-y-5">
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
             <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -233,7 +221,6 @@
             <div id="cityGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
           </div>
 
-          <!-- Şehirlerarası Fırsat Hesaplayıcı -->
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
             <h3 class="text-sm font-bold text-white mb-3"><i class="fa-solid fa-route text-blue-400 mr-2"></i>Başka İlden Araç Alma Fırsat Hesaplayıcı</h3>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
@@ -255,7 +242,6 @@
           </div>
         </section>
 
-        <!-- SEKME 5: KRONİK SORUNLAR & PÜF NOKTALARI -->
         <section id="tab-chronic" class="tab-section hidden space-y-5">
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
             <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -285,7 +271,6 @@
           </div>
         </section>
 
-        <!-- SEKME 6: EN YAKIN EKSPERTİZ -->
         <section id="tab-ekspertiz" class="tab-section hidden space-y-5">
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
             <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -310,118 +295,47 @@
   </main>
 
   <script>
-    // --- SUPABASE CANLI BAĞLANTI ---
     const SUPABASE_URL = "https://esdyiobtstawmgtybpdd.supabase.co";
     const SUPABASE_KEY = "sb_publishable_NLItWoqm9gxD-zYDMtYOww_oD7ryjTd";
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let LIVE_LISTINGS = [];
 
-    async function loadLiveListings() {
-      const dot = document.getElementById('dbStatusDot');
-      const statusTxt = document.getElementById('dbStatusText');
-      const grid = document.getElementById('liveGrid');
-      const badge = document.getElementById('liveCountBadge');
-
-      try {
-        let res = await db
-          .from('arac_ilanlari')
-          .select('*')
-          .order('son_gorulme', { ascending: false });
-
-        if (res.error && res.error.message && res.error.message.includes('son_gorulme')) {
-          res = await db.from('arac_ilanlari').select('*');
-        }
-
-        if (res.error) throw res.error;
-
-        LIVE_LISTINGS = res.data || [];
-        badge.innerText = LIVE_LISTINGS.length;
-        dot.className = 'w-2 h-2 rounded-full bg-emerald-400 inline-block';
-        statusTxt.innerText = `Canlı Veritabanı Aktif (${LIVE_LISTINGS.length} İlan)`;
-
-        if (LIVE_LISTINGS.length === 0) {
-          grid.innerHTML = '<div class="col-span-full text-center py-8 text-slate-400 text-xs">Henüz veritabanında ilan bulunmuyor.</div>';
-          return;
-        }
-
-        grid.innerHTML = LIVE_LISTINGS.map(car => {
-          const ekstralar = Array.isArray(car.ekstralar) && car.ekstralar.length
-            ? `<div class="flex flex-wrap gap-1 mt-2">${car.ekstralar.map(e => `<span class="px-2 py-0.5 rounded-md bg-blue-500/15 text-blue-300 text-[10px]">${e}</span>`).join('')}</div>`
-            : '';
-          const hasarDurum = (car.boya_sayisi === 0 && car.degisen_sayisi === 0)
-            ? '<span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">Hatasız / Boyasız</span>'
-            : `<span class="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 text-[10px] font-bold">${car.boya_sayisi || 0} Boya • ${car.degisen_sayisi || 0} Değişen</span>`;
-
-          return `
-            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2.5 flex flex-col justify-between">
-              <div>
-                <div class="flex items-start justify-between gap-2">
-                  <div>
-                    <h3 class="font-bold text-white text-sm">${car.yil || ''} ${car.marka || ''} ${car.model || ''}</h3>
-                    <p class="text-[11px] text-slate-400">${car.paket || ''} • ${car.il || ''}</p>
-                  </div>
-                  ${hasarDurum}
-                </div>
-                <div class="mt-2.5 text-lg font-extrabold text-emerald-400">${fmt(car.fiyat || 0)}</div>
-                <div class="text-[11px] text-slate-400 mt-1">
-                  <i class="fa-solid fa-gauge-high mr-1"></i>${new Intl.NumberFormat('tr-TR').format(car.km || 0)} km
-                  <span class="mx-1.5">•</span>
-                  <i class="fa-solid fa-file-shield mr-1"></i>Tramer: ${fmt(car.tramer || 0)}
-                </div>
-                ${ekstralar}
-              </div>
-              <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-500">
-                <span>ID: ${car.ilan_id}</span>
-                <span><i class="fa-solid fa-robot mr-1 text-blue-400"></i>AI Doğrulandı</span>
-              </div>
-            </div>
-          `;
-        }).join('');
-      } catch (err) {
-        console.error('Supabase hatası:', err);
-        dot.className = 'w-2 h-2 rounded-full bg-rose-500 inline-block';
-        statusTxt.innerText = 'Veritabanı bağlantısı bekleniyor (API Key kontrol edin)';
-        grid.innerHTML = `<div class="col-span-full text-center py-8 text-rose-400 text-xs">Veritabanına bağlanılamadı: ${err.message || 'Publishable key değerini kontrol edin.'}</div>`;
-      }
-    }
-
-    // --- VERİTABANI ---
-    const CAR_DB = {
-      "Volkswagen": { base: 1350000, models: ["Passat", "Golf", "Polo", "Tiguan", "T-Roc", "Jetta", "Caddy", "Arteon"] },
-      "Fiat": { base: 860000, models: ["Egea Sedan", "Egea Cross", "Egea Hatchback", "500X", "Doblo", "Fiorino", "Linea"] },
-      "Renault": { base: 980000, models: ["Clio", "Megane", "Taliant", "Austral", "Captur", "Fluence", "Kadjar"] },
-      "Toyota": { base: 1280000, models: ["Corolla", "Corolla Hybrid", "C-HR", "Yaris", "RAV4", "Auris", "Hilux"] },
-      "Honda": { base: 1320000, models: ["Civic", "CR-V", "HR-V", "City", "Jazz", "Accord"] },
-      "BMW": { base: 2350000, models: ["320i", "520i", "118i", "218i Gran Coupe", "X1", "X3", "420i"] },
-      "Mercedes-Benz": { base: 2450000, models: ["C200", "E200", "A200", "CLA200", "GLA200", "GLC"] },
-      "Audi": { base: 2250000, models: ["A3", "A4", "A5", "A6", "Q2", "Q3", "Q5"] },
-      "Peugeot": { base: 1180000, models: ["208", "308", "2008", "3008", "408", "508", "5008"] },
-      "Opel": { base: 1080000, models: ["Corsa", "Astra", "Mokka", "Crossland", "Grandland", "Insignia"] },
-      "Hyundai": { base: 1050000, models: ["i20", "i10", "Bayon", "Tucson", "Elantra", "Accent Blue"] },
-      "Ford": { base: 1120000, models: ["Focus", "Fiesta", "Puma", "Kuga", "Courier", "Mondeo"] },
-      "Skoda": { base: 1290000, models: ["Octavia", "Superb", "Kamiq", "Karoq", "Scala", "Fabia"] },
-      "Seat": { base: 1160000, models: ["Leon", "Ibiza", "Arona", "Ateca"] },
-      "Chery": { base: 1450000, models: ["Omoda 5", "Tiggo 7 Pro", "Tiggo 8 Pro"] },
-      "Togg": { base: 1620000, models: ["T10X V2 Uzun Menzil", "T10X V1 Standart Menzil"] },
-      "Tesla": { base: 1950000, models: ["Model Y", "Model 3"] },
-      "BYD": { base: 1580000, models: ["Atto 3", "Seal U DM-i", "Dolphin"] },
-      "Dacia": { base: 940000, models: ["Duster", "Sandero Stepway", "Jogger"] },
-      "Nissan": { base: 1240000, models: ["Qashqai", "Juke", "X-Trail", "Micra"] },
-      "Kia": { base: 1150000, models: ["Sportage", "Stonic", "Ceed", "Rio", "Picanto"] },
-      "Citroen": { base: 1090000, models: ["C3", "C3 Aircross", "C4", "C4 X", "C5 Aircross", "C-Elysee"] },
-      "Volvo": { base: 2400000, models: ["XC40", "XC60", "S60", "S90", "V40"] },
-      "Suzuki": { base: 1060000, models: ["Vitara", "Swift", "S-Cross"] },
-      "Mazda": { base: 1180000, models: ["Mazda 3", "CX-3", "CX-5"] },
-      "Mini": { base: 1550000, models: ["Cooper", "Countryman"] },
-      "Jeep": { base: 1480000, models: ["Renegade", "Compass", "Avenger"] },
-      "Cupra": { base: 1790000, models: ["Formentor", "Leon"] },
-      "MG": { base: 1290000, models: ["ZS", "HS", "MG4"] },
-      "Alfa Romeo": { base: 1680000, models: ["Tonale", "Giulia", "Giulietta"] },
-      "Diğer": { base: 1000000, models: ["Özel Model"] }
+    const BRAND_MODELS = {
+      "Volkswagen": ["Passat", "Golf", "Polo", "Tiguan", "T-Roc", "Jetta", "Caddy", "Arteon"],
+      "Fiat": ["Egea Sedan", "Egea Cross", "Egea Hatchback", "500X", "Doblo", "Fiorino", "Linea"],
+      "Renault": ["Clio", "Megane", "Taliant", "Austral", "Captur", "Fluence", "Kadjar"],
+      "Toyota": ["Corolla", "Corolla Hybrid", "C-HR", "Yaris", "RAV4", "Auris", "Hilux"],
+      "Honda": ["Civic", "CR-V", "HR-V", "City", "Jazz", "Accord"],
+      "BMW": ["320i", "520i", "118i", "218i Gran Coupe", "X1", "X3", "420i"],
+      "Mercedes-Benz": ["C200", "E200", "A200", "CLA200", "GLA200", "GLC"],
+      "Audi": ["A3", "A4", "A5", "A6", "Q2", "Q3", "Q5"],
+      "Peugeot": ["208", "308", "2008", "3008", "408", "508", "5008"],
+      "Opel": ["Corsa", "Astra", "Mokka", "Crossland", "Grandland", "Insignia"],
+      "Hyundai": ["i20", "i10", "Bayon", "Tucson", "Elantra", "Accent Blue"],
+      "Ford": ["Focus", "Fiesta", "Puma", "Kuga", "Courier", "Mondeo"],
+      "Skoda": ["Octavia", "Superb", "Kamiq", "Karoq", "Scala", "Fabia"],
+      "Seat": ["Leon", "Ibiza", "Arona", "Ateca"],
+      "Chery": ["Omoda 5", "Tiggo 7 Pro", "Tiggo 8 Pro"],
+      "Togg": ["T10X V2 Uzun Menzil", "T10X V1 Standart Menzil"],
+      "Tesla": ["Model Y", "Model 3"],
+      "BYD": ["Atto 3", "Seal U DM-i", "Dolphin"],
+      "Dacia": ["Duster", "Sandero Stepway", "Jogger"],
+      "Nissan": ["Qashqai", "Juke", "X-Trail", "Micra"],
+      "Kia": ["Sportage", "Stonic", "Ceed", "Rio", "Picanto"],
+      "Citroen": ["C3", "C3 Aircross", "C4", "C4 X", "C5 Aircross", "C-Elysee"],
+      "Volvo": ["XC40", "XC60", "S60", "S90", "V40"],
+      "Suzuki": ["Vitara", "Swift", "S-Cross"],
+      "Mazda": ["Mazda 3", "CX-3", "CX-5"],
+      "Mini": ["Cooper", "Countryman"],
+      "Jeep": ["Renegade", "Compass", "Avenger"],
+      "Cupra": ["Formentor", "Leon"],
+      "MG": ["ZS", "HS", "MG4"],
+      "Alfa Romeo": ["Tonale", "Giulia", "Giulietta"],
+      "Diğer": ["Özel Model"]
     };
 
     const SAMPLES = [
-      "2020 Volkswagen Passat 1.5 TSI Impression, 85.000 km, Ankara. Sadece sağ ön çamurluk lokal boyalı, değişen yok. 14.500 TL yeni tarihli tramer var. Cam tavan ve hayalet ekran mevcut. İlan Fiyatı: 1.360.000 TL",
+      "2020 Volkswagen Passat 1.5 TSI Impression, 85.000 km, Ankara. Sadece sağ ön çamurluk lokal boyalı, değişen yok. 14.500 TL yeni tarihli tramer var. Cam tavan ve hayalet ekran mevcut. İlan Fiyatı: 1.580.000 TL",
       "2022 Fiat Egea Sedan 1.4 Fire Urban, 42.000 km, Eskişehir. Hatasız boyasız değişensiz, tramer 0 TL. İlk sahibinden servis bakımlı. İlan Fiyatı: 885.000 TL",
       "2019 Peugeot 3008 1.2 PureTech Allure, 118.000 km, İstanbul. Acil nakit ihtiyacından satılık, ekspertize açık ama vaktim yok ciddi alıcı gelsin. 3 parça boya, 2 değişen, 85.000 TL tramer var. İlan Fiyatı: 1.240.000 TL"
     ];
@@ -456,7 +370,6 @@
       { name: "Pilot Garage — Muratpaşa", city: "Antalya", district: "Muratpaşa", rating: "4.7", tse: "TSE-HYB Belgeli", phone: "0242 555 00 00" }
     ];
 
-    // --- YARDIMCI FONKSİYONLAR ---
     const fmt = (n) => new Intl.NumberFormat('tr-TR').format(Math.round(n)) + ' TL';
 
     function switchTab(id) {
@@ -504,33 +417,127 @@
       }
     }
 
-    function loadSample(idx) {
-      document.getElementById('adInput').value = SAMPLES[idx];
-      analyzeAdText();
+    async function loadLiveListings() {
+      const dot = document.getElementById('dbStatusDot');
+      const statusTxt = document.getElementById('dbStatusText');
+      const grid = document.getElementById('liveGrid');
+      const badge = document.getElementById('liveCountBadge');
+
+      try {
+        let res = await db
+          .from('arac_ilanlari')
+          .select('*')
+          .order('son_gorulme', { ascending: false });
+
+        if (res.error && res.error.message && res.error.message.includes('son_gorulme')) {
+          res = await db.from('arac_ilanlari').select('*');
+        }
+
+        if (res.error) throw res.error;
+
+        LIVE_LISTINGS = (res.data || []).filter(c => Number(c.fiyat) > 0);
+        badge.innerText = LIVE_LISTINGS.length;
+        dot.className = 'w-2 h-2 rounded-full bg-emerald-400 inline-block';
+        statusTxt.innerText = `Canlı Veritabanı Aktif (${LIVE_LISTINGS.length} İlan)`;
+
+        if (LIVE_LISTINGS.length === 0) {
+          grid.innerHTML = '<div class="col-span-full text-center py-8 text-slate-400 text-xs">Veritabanında henüz fiyatlı ilan yok. Gece botunu çalıştırın veya ilan ekleyin.</div>';
+          return;
+        }
+
+        grid.innerHTML = LIVE_LISTINGS.map(car => {
+          const ekstralar = Array.isArray(car.ekstralar) && car.ekstralar.length
+            ? `<div class="flex flex-wrap gap-1 mt-2">${car.ekstralar.map(e => `<span class="px-2 py-0.5 rounded-md bg-blue-500/15 text-blue-300 text-[10px]">${e}</span>`).join('')}</div>`
+            : '';
+          const hasarDurum = (car.boya_sayisi === 0 && car.degisen_sayisi === 0)
+            ? '<span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">Hatasız / Boyasız</span>'
+            : `<span class="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 text-[10px] font-bold">${car.boya_sayisi || 0} Boya • ${car.degisen_sayisi || 0} Değişen</span>`;
+
+          return `
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2.5 flex flex-col justify-between">
+              <div>
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <h3 class="font-bold text-white text-sm">${car.yil || ''} ${car.marka || ''} ${car.model || ''}</h3>
+                    <p class="text-[11px] text-slate-400">${car.paket || ''} • ${car.il || ''}</p>
+                  </div>
+                  ${hasarDurum}
+                </div>
+                <div class="mt-2.5 text-lg font-extrabold text-emerald-400">${fmt(car.fiyat || 0)}</div>
+                <div class="text-[11px] text-slate-400 mt-1">
+                  <i class="fa-solid fa-gauge-high mr-1"></i>${new Intl.NumberFormat('tr-TR').format(car.km || 0)} km
+                  <span class="mx-1.5">•</span>
+                  <i class="fa-solid fa-file-shield mr-1"></i>Tramer: ${fmt(car.tramer || 0)}
+                </div>
+                ${ekstralar}
+              </div>
+              <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-500">
+                <span>ID: ${car.ilan_id}</span>
+                <span><i class="fa-solid fa-database mr-1 text-emerald-400"></i>Canlı Emsal</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error('Supabase hatası:', err);
+        dot.className = 'w-2 h-2 rounded-full bg-rose-500 inline-block';
+        statusTxt.innerText = 'Veritabanı bağlantı hatası';
+        grid.innerHTML = `<div class="col-span-full text-center py-8 text-rose-400 text-xs">Veritabanına bağlanılamadı: ${err.message || ''}</div>`;
+      }
     }
 
-    function calculatePrice(brand, year, km, paint, changed, tramer) {
-      const base = (CAR_DB[brand] ? CAR_DB[brand].base : 1100000);
-      const yearFactor = 1 + (year - 2021) * 0.065;
-      const kmPenalty = Math.max(0, (km - 60000) / 10000) * 14000;
-      const damagePenalty = (paint * 18000) + (changed * 38000) + (tramer * 0.45);
-      const marketAvg = Math.max(350000, (base * yearFactor) - kmPenalty - damagePenalty);
-      const fastSale = marketAvg * 0.94;
-      const highBand = marketAvg * 1.06;
-      return { fastSale, marketAvg, highBand };
+    function computeFromLiveComps(brand, model, year) {
+      const bLower = (brand || '').toLowerCase();
+      const mLower = (model || '').toLowerCase();
+
+      let matches = LIVE_LISTINGS.filter(c =>
+        (c.marka || '').toLowerCase() === bLower &&
+        (!mLower || (c.model || '').toLowerCase().includes(mLower.split(' ')[0]))
+      );
+      if (!matches.length) {
+        matches = LIVE_LISTINGS.filter(c => (c.marka || '').toLowerCase() === bLower);
+      }
+      if (!matches.length) {
+        return { matches: [], marketAvg: null, fastSale: null, highBand: null };
+      }
+
+      const prices = matches.map(c => Number(c.fiyat)).filter(n => n > 0);
+      const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
+      const minP = Math.min(...prices);
+      const maxP = Math.max(...prices);
+
+      return {
+        matches,
+        marketAvg: avg,
+        fastSale: prices.length > 1 ? minP : avg * 0.95,
+        highBand: prices.length > 1 ? maxP : avg * 1.05
+      };
     }
 
     function renderValuationHTML(data) {
       const { brand, model, year, km, paint, changed, tramer, asking, flags } = data;
-      const { fastSale, marketAvg, highBand } = calculatePrice(brand, year, km, paint, changed, tramer);
+      const { matches, marketAvg, fastSale, highBand } = computeFromLiveComps(brand, model, year);
+
+      if (marketAvg === null) {
+        return `
+          <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2">
+            <div class="text-sm font-bold text-amber-300"><i class="fa-solid fa-circle-info mr-1.5"></i>Bu Araç İçin Henüz Canlı Emsal Yok</div>
+            <p class="text-xs text-slate-300">
+              Sabit/uydurma fiyat yerine yalnızca Supabase'deki <strong>arac_ilanlari</strong> tablosundaki gerçek emsaller gösterilir.
+              Şu an veritabanında <strong>${LIVE_LISTINGS.length}</strong> canlı ilan kayıtlı. <strong>guncelle.py</strong> içindeki ilan listesine bu marka/modelden emsal ekleyip botu çalıştırdığınızda anlık piyasa ortalaması burada görünecektir.
+            </p>
+          </div>
+        `;
+      }
+
       const noter = 2250, sigorta = 14500, ekspertiz = 6500;
       const netCost = (asking || marketAvg) + noter + sigorta + ekspertiz;
 
       let badge = '';
       if (asking) {
-        if (asking <= fastSale * 1.01) badge = '<span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 text-xs font-bold">🔥 FIRSAT FİYAT</span>';
-        else if (asking <= marketAvg * 1.03) badge = '<span class="px-2.5 py-1 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-bold">✅ PİYASA DEĞERİNDE</span>';
-        else badge = '<span class="px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-300 text-xs font-bold">⚠️ PİYASADAN PAHALI</span>';
+        if (asking <= fastSale * 1.01) badge = '<span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 text-xs font-bold">🔥 EMSAL ALTI / FIRSAT</span>';
+        else if (asking <= highBand * 1.02) badge = '<span class="px-2.5 py-1 rounded-lg bg-blue-500/20 text-blue-300 text-xs font-bold">✅ CANLI EMSAL BANDINDA</span>';
+        else badge = '<span class="px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-300 text-xs font-bold">⚠️ EMSAL ÜSTÜ</span>';
       }
 
       const flagsHTML = flags && flags.length ? `
@@ -539,23 +546,23 @@
           ${flags.map(f => `<div>• ${f}</div>`).join('')}
         </div>` : '';
 
-      const matchingLive = LIVE_LISTINGS.filter(c => (c.marka || '').toLowerCase() === brand.toLowerCase());
-      const liveCompsHTML = matchingLive.length ? `
+      const compsListHTML = `
         <div class="p-3.5 rounded-xl bg-emerald-500/5 border border-emerald-500/25 space-y-2">
           <div class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
-            <i class="fa-solid fa-database"></i> Canlı Veritabanından Eşleşen Emsaller (${matchingLive.length})
+            <i class="fa-solid fa-database"></i> Hesaplamada Kullanılan Canlı Emsaller (${matches.length} Kayıt)
           </div>
           <div class="space-y-1.5">
-            ${matchingLive.slice(0, 3).map(c => `
+            ${matches.map(c => `
               <div class="flex flex-wrap items-center justify-between text-xs bg-slate-950/80 px-3 py-2 rounded-lg border border-slate-800">
-                <span class="text-slate-200 font-medium">${c.yil} ${c.marka} ${c.model} (${new Intl.NumberFormat('tr-TR').format(c.km)} km, ${c.il})</span>
+                <span class="text-slate-200 font-medium">${c.yil || ''} ${c.marka || ''} ${c.model || ''} (${new Intl.NumberFormat('tr-TR').format(c.km || 0)} km • ${c.il || ''})</span>
                 <span class="font-extrabold text-emerald-300">${fmt(c.fiyat)}</span>
               </div>
             `).join('')}
           </div>
-        </div>` : '';
+        </div>
+      `;
 
-      const shareText = encodeURIComponent(`OtoEmsal AI Raporu: ${year} ${brand} ${model} (${km} km) | Hızlı Satış: ${fmt(fastSale)} | Piyasa Ort: ${fmt(marketAvg)}`);
+      const shareText = encodeURIComponent(`OtoEmsal Canlı Emsal: ${year} ${brand} ${model} | Canlı Ort: ${fmt(marketAvg)}`);
 
       return `
         <div class="space-y-4">
@@ -569,25 +576,25 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
-              <div class="text-[11px] text-emerald-300 font-semibold">Hızlı Satış (-%6 Pazarlık)</div>
+              <div class="text-[11px] text-emerald-300 font-semibold">En Düşük Canlı Emsal</div>
               <div class="text-lg font-extrabold text-white mt-0.5">${fmt(fastSale)}</div>
             </div>
             <div class="p-3.5 rounded-xl bg-blue-500/15 border border-blue-500/40">
-              <div class="text-[11px] text-blue-300 font-semibold">Piyasa Ortalaması</div>
+              <div class="text-[11px] text-blue-300 font-semibold">Canlı Emsal Ortalaması</div>
               <div class="text-lg font-extrabold text-white mt-0.5">${fmt(marketAvg)}</div>
             </div>
             <div class="p-3.5 rounded-xl bg-slate-800/80 border border-slate-700">
-              <div class="text-[11px] text-slate-300 font-semibold">Üst Bant (Tok Satıcı)</div>
+              <div class="text-[11px] text-slate-300 font-semibold">En Yüksek Canlı Emsal</div>
               <div class="text-lg font-extrabold text-white mt-0.5">${fmt(highBand)}</div>
             </div>
           </div>
 
-          ${liveCompsHTML}
+          ${compsListHTML}
           ${flagsHTML}
 
           <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs flex flex-wrap items-center justify-between gap-2">
             <div>
-              <span class="text-slate-400">Cebinden Çıkacak Net Maliyet (Noter + Sigorta + Ekspertiz dahil):</span>
+              <span class="text-slate-400">Tahmini Devir + Sigorta + Ekspertiz Dahil Toplam:</span>
               <strong class="text-white ml-1">${fmt(netCost)}</strong>
             </div>
             <a href="https://wa.me/?text=${shareText}" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold">
@@ -598,16 +605,21 @@
       `;
     }
 
+    function loadSample(idx) {
+      document.getElementById('adInput').value = SAMPLES[idx];
+      analyzeAdText();
+    }
+
     function analyzeAdText() {
       const txt = document.getElementById('adInput').value.trim();
       if (!txt) return alert('Lütfen bir ilan metni yapıştırın.');
       const lower = txt.toLowerCase();
 
       let brand = "Volkswagen", model = "Passat";
-      for (const b of Object.keys(CAR_DB)) {
+      for (const b of Object.keys(BRAND_MODELS)) {
         if (lower.includes(b.toLowerCase())) {
           brand = b;
-          model = CAR_DB[b].models.find(m => lower.includes(m.toLowerCase().split(' ')[0])) || CAR_DB[b].models[0];
+          model = BRAND_MODELS[b].find(m => lower.includes(m.toLowerCase().split(' ')[0])) || BRAND_MODELS[b][0];
           break;
         }
       }
@@ -643,22 +655,22 @@
 
     function populateBrands() {
       const bSel = document.getElementById('mBrand');
-      bSel.innerHTML = Object.keys(CAR_DB).map(b => `<option value="${b}">${b}</option>`).join('');
+      bSel.innerHTML = Object.keys(BRAND_MODELS).map(b => `<option value="${b}">${b}</option>`).join('');
       populateModels();
     }
 
     function populateModels() {
       const brand = document.getElementById('mBrand').value;
       const mSel = document.getElementById('mModel');
-      mSel.innerHTML = CAR_DB[brand].models.map(m => `<option value="${m}">${m}</option>`).join('');
+      mSel.innerHTML = BRAND_MODELS[brand].map(m => `<option value="${m}">${m}</option>`).join('');
     }
 
     function runManualValuation() {
       const data = {
         brand: document.getElementById('mBrand').value,
         model: document.getElementById('mModel').value,
-        year: parseInt(document.getElementById('mYear').value) || 2021,
-        km: parseInt(document.getElementById('mKm').value) || 75000,
+        year: parseInt(document.getElementById('mYear').value) || 2020,
+        km: parseInt(document.getElementById('mKm').value) || 85000,
         paint: parseInt(document.getElementById('mPaint').value) || 0,
         changed: parseInt(document.getElementById('mChanged').value) || 0,
         tramer: parseInt(document.getElementById('mTramer').value) || 0,
@@ -723,7 +735,7 @@
     function copyQuestions() {
       const text = Array.from(document.querySelectorAll('#sellerQuestions li')).map((li, i) => `${i+1}. ${li.innerText}`).join('\n');
       navigator.clipboard.writeText(text);
-      alert('Satıcıya sorulacak 5 kritik soru kopyalandı! WhatsApp\'a yapıştırabilirsiniz.');
+      alert('Satıcıya sorulacak 5 kritik soru kopyalandı! WhatsApp\x27a yapıştırabilirsiniz.');
     }
 
     function renderEkspertiz() {
@@ -746,7 +758,6 @@
       `).join('');
     }
 
-    // Başlatma
     populateBrands();
     renderCities();
     renderChronic();
