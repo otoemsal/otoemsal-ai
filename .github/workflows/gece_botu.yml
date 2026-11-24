@@ -1,0 +1,20 @@
+name: Gece Arac Fiyat Guncelleme
+on:
+  schedule:
+    - cron: '0 0 * * *' # Her gece TR saatiyle 03:00
+  workflow_dispatch:    # İstediğin an elle çalıştırmak için
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install google-genai supabase requests
+      - env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: python guncelle.py
