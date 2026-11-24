@@ -77,6 +77,9 @@
           <button onclick="switchTab('ai')" data-tab="ai" class="tab-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white">
             <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>AI İlan Analiz
           </button>
+          <button onclick="switchTab('chat')" data-tab="chat" class="tab-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">
+            <i class="fa-solid fa-comments text-blue-400 mr-1.5"></i>OtoEmsal AI Sohbet
+          </button>
           <button onclick="switchTab('live')" data-tab="live" class="tab-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">
             <i class="fa-solid fa-bolt text-emerald-400 mr-1.5"></i>Canlı Piyasa <span id="liveCountBadge" class="ml-1 px-1.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px]">0</span>
           </button>
@@ -94,6 +97,7 @@
           </button>
         </nav>
 
+        <!-- SEKME 1: AI İLAN ANALİZ -->
         <section id="tab-ai" class="tab-section space-y-5">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
             <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
@@ -129,6 +133,42 @@
           </div>
         </section>
 
+        <!-- SEKME 2: OTOEMSAL AI SOHBET -->
+        <section id="tab-chat" class="tab-section hidden space-y-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+              <div>
+                <h2 class="text-base font-bold text-white flex items-center gap-2">
+                  <i class="fa-solid fa-bot text-blue-400"></i> OtoEmsal AI — İkinci El Araç Danışmanı
+                </h2>
+                <p class="text-xs text-slate-400">Canlı emsaller, hasar/tramer pazarlığı, kronik sorunlar ve şehirlerarası alım kararları hakkında sohbet edin.</p>
+              </div>
+              <button onclick="resetChat()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300">
+                <i class="fa-solid fa-trash-can mr-1"></i>Sohbeti Temizle
+              </button>
+            </div>
+
+            <!-- Hazır Sorular -->
+            <div class="flex flex-wrap gap-1.5">
+              <button onclick="sendQuickPrompt('Canlı veritabanındaki araçları özetleyip hangisinin fiyat/performans olarak öne çıktığını yorumlar mısın?')" class="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-blue-300 font-medium">Canlı Emsalleri Yorumla</button>
+              <button onclick="sendQuickPrompt('2 parça boya ve 25.000 TL trameri olan bir araçta pazarlık payı ne olmalı?')" class="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-medium">Boya & Tramer Pazarlığı</button>
+              <button onclick="sendQuickPrompt('Veritabanında olmayan bir model için almadan önce hangi kontrolleri yapmalıyım?')" class="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 font-medium">Listede Olmayan Model Kontrolü</button>
+            </div>
+
+            <!-- Mesaj Geçmişi -->
+            <div id="chatMessages" class="h-96 overflow-y-auto space-y-3 p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-sm"></div>
+
+            <!-- Mesaj Gönderme Alanı -->
+            <form onsubmit="handleChatSubmit(event)" class="flex gap-2">
+              <input id="chatInput" type="text" placeholder="OtoEmsal AI'a araç, fiyat, tramer veya kronik sorun sor..." class="flex-1 rounded-xl bg-slate-950 border border-slate-700 focus:border-blue-500 focus:outline-none px-4 py-2.5 text-sm text-white placeholder-slate-500" />
+              <button type="submit" id="chatSendBtn" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm transition flex items-center gap-1.5">
+                <i class="fa-solid fa-paper-plane"></i> Gönder
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- SEKME 3: CANLI PİYASA -->
         <section id="tab-live" class="tab-section hidden space-y-5">
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
             <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -148,6 +188,7 @@
           </div>
         </section>
 
+        <!-- SEKME 4: MANUEL SORGU -->
         <section id="tab-manual" class="tab-section hidden space-y-5">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
             <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3.5">
@@ -205,6 +246,7 @@
           </div>
         </section>
 
+        <!-- SEKME 5: İL TEMİZLİK ENDEKSİ -->
         <section id="tab-cities" class="tab-section hidden space-y-5">
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
             <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -242,6 +284,7 @@
           </div>
         </section>
 
+        <!-- SEKME 6: KRONİK SORUNLAR -->
         <section id="tab-chronic" class="tab-section hidden space-y-5">
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
             <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -271,6 +314,7 @@
           </div>
         </section>
 
+        <!-- SEKME 7: EN YAKIN EKSPERTİZ -->
         <section id="tab-ekspertiz" class="tab-section hidden space-y-5">
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
             <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -297,8 +341,11 @@
   <script>
     const SUPABASE_URL = "https://esdyiobtstawmgtybpdd.supabase.co";
     const SUPABASE_KEY = "sb_publishable_NLItWoqm9gxD-zYDMtYOww_oD7ryjTd";
+    const GEMINI_API_KEY = "BURAYA_GEMINI_API_KEY_YAPISTIR";
+
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let LIVE_LISTINGS = [];
+    let chatHistory = [];
 
     const BRAND_MODELS = {
       "Volkswagen": ["Passat", "Golf", "Polo", "Tiguan", "T-Roc", "Jetta", "Caddy", "Arteon"],
@@ -371,6 +418,139 @@
     ];
 
     const fmt = (n) => new Intl.NumberFormat('tr-TR').format(Math.round(n)) + ' TL';
+
+    function escapeHTML(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/\n/g, '<br>');
+    }
+
+    function initChat() {
+      chatHistory = [
+        {
+          role: 'assistant',
+          text: 'Merhaba, ben **OtoEmsal AI**. Canlı veritabanındaki emsal ilanları, hasar/tramer etkilerini, kronik sorunları ve pazarlık stratejilerini birlikte değerlendirebiliriz. Hangi araçla ilgili destek istersin?'
+        }
+      ];
+      renderChatMessages();
+    }
+
+    function resetChat() {
+      initChat();
+    }
+
+    function renderChatMessages() {
+      const container = document.getElementById('chatMessages');
+      container.innerHTML = chatHistory.map(m => {
+        const isUser = m.role === 'user';
+        const formatted = escapeHTML(m.text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        return `
+          <div class="flex ${isUser ? 'justify-end' : 'justify-start'}">
+            <div class="max-w-[85%] rounded-2xl px-4 py-2.5 text-xs leading-relaxed ${
+              isUser
+                ? 'bg-blue-600 text-white'
+                : 'bg-slate-900 border border-slate-800 text-slate-200'
+            }">
+              ${!isUser ? '<div class="text-[10px] font-bold text-blue-400 mb-1">OtoEmsal AI</div>' : ''}
+              <div>${formatted}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    async function sendQuickPrompt(promptText) {
+      document.getElementById('chatInput').value = promptText;
+      await sendChatMessage(promptText);
+    }
+
+    async function handleChatSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      await sendChatMessage(text);
+    }
+
+    async function sendChatMessage(userText) {
+      const btn = document.getElementById('chatSendBtn');
+      chatHistory.push({ role: 'user', text: userText });
+      renderChatMessages();
+
+      if (!GEMINI_API_KEY || GEMINI_API_KEY === 'BURAYA_GEMINI_API_KEY_YAPISTIR') {
+        chatHistory.push({
+          role: 'assistant',
+          text: 'Ben **OtoEmsal AI**. Sohbet yanıtı üretebilmek için `index.html` içindeki `GEMINI_API_KEY` alanına Gemini API anahtarını eklemen gerekiyor. Yine de şu an veritabanında **' + LIVE_LISTINGS.length + '** canlı emsal kayıtlı.'
+        });
+        renderChatMessages();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Düşünüyor...';
+
+      try {
+        const systemInstruction = `
+Senin adın **OtoEmsal AI**. Türkiye ikinci el araç piyasası, emsal analizi, hasar/tramer etkisi, ekspertiz ve şehirlerarası alım maliyetleri konusunda uzmanlaşmış yapay zeka asistanısın.
+Kurallar:
+1. Kendini her zaman **OtoEmsal AI** olarak tanıt ve Türkçe yanıt ver.
+2. Canlı veritabanı emsal özetini dikkate al: ${JSON.stringify(LIVE_LISTINGS.slice(0, 15))}.
+3. Veritabanında o model için doğrudan kayıt yoksa bunu açıkça belirt; yine de araç segmenti, yıl/km, boya/değişen/tramer etkileri, kronik kontrol noktaları ve pazarlık mantığı hakkında net ve pratik bilgi ver.
+4. Fiyat yorumlarken kesin garanti yerine piyasa bandı, ekspertiz ve 5664 teyidi gerektiğini hatırlat.
+`;
+
+        const contents = [
+          ...chatHistory.slice(-8).map(m => ({
+            role: m.role === 'assistant' ? 'model' : 'user',
+            parts: [{ text: m.text }]
+          }))
+        ];
+
+        const modeller = ['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-flash-lite-latest'];
+        let replyText = '';
+
+        for (const model of modeller) {
+          const res = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                systemInstruction: { parts: [{ text: systemInstruction }] },
+                contents
+              })
+            }
+          );
+          if (res.ok) {
+            const json = await res.json();
+            replyText = json?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            if (replyText) break;
+          }
+        }
+
+        if (!replyText) {
+          throw new Error('Model yanıtı alınamadı');
+        }
+
+        chatHistory.push({ role: 'assistant', text: replyText });
+        renderChatMessages();
+      } catch (err) {
+        console.error('OtoEmsal AI sohbet hatası:', err);
+        chatHistory.push({
+          role: 'assistant',
+          text: 'Ben **OtoEmsal AI**. Şu an yanıt üretirken bir bağlantı veya kota sorunu oluştu; birkaç saniye sonra tekrar deneyebilirsin.'
+        });
+        renderChatMessages();
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Gönder';
+      }
+    }
 
     function switchTab(id) {
       document.querySelectorAll('.tab-section').forEach(s => s.classList.add('hidden'));
@@ -735,7 +915,7 @@
     function copyQuestions() {
       const text = Array.from(document.querySelectorAll('#sellerQuestions li')).map((li, i) => `${i+1}. ${li.innerText}`).join('\n');
       navigator.clipboard.writeText(text);
-      alert('Satıcıya sorulacak 5 kritik soru kopyalandı! WhatsApp\x27a yapıştırabilirsiniz.');
+      alert('Satıcıya sorulacak 5 kritik soru kopyalandı! WhatsApp\'a yapıştırabilirsiniz.');
     }
 
     function renderEkspertiz() {
@@ -762,6 +942,7 @@
     renderCities();
     renderChronic();
     renderEkspertiz();
+    initChat();
     loadLiveListings();
   </script>
 </body>
